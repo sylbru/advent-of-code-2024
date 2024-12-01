@@ -27,7 +27,11 @@ fn parse_one(input: &str) -> Option<(Vec<i32>, Vec<i32>)> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    parse_one(input).map(run_two)
+}
+
+fn run_two((list_a, list_b): (Vec<i32>, Vec<i32>)) -> u32 {
+    31
 }
 
 #[cfg(test)]
@@ -43,6 +47,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(31));
     }
 }

@@ -13,19 +13,26 @@ fn run_one((mut list_a, mut list_b): (Vec<i32>, Vec<i32>)) -> u32 {
 }
 
 fn parse_one(input: &str) -> Option<(Vec<i32>, Vec<i32>)> {
-    let mut list_a = Vec::new();
-    let mut list_b = Vec::new();
-
-    for line in input.lines() {
-        if let Some((a_str, b_str)) = line.split_once("   ") {
-            if let (Ok(a), Ok(b)) = (a_str.parse::<i32>(), b_str.parse::<i32>()) {
-                list_a.push(a);
-                list_b.push(b);
-            }
-        }
-    }
-    Some((list_a, list_b))
+    let result: (Vec<i32>, Vec<i32>) = input
+        .lines()
+        .filter_map(|line| line.split_once("   "))
+        .filter_map(
+            |(a_str, b_str)| match (a_str.parse::<i32>(), b_str.parse::<i32>()) {
+                (Ok(a), Ok(b)) => Some((a, b)),
+                _ => None,
+            },
+        )
+        .fold(
+            (Vec::new(), Vec::new()),
+            |(mut acc_a, mut acc_b), (a, b)| {
+                acc_a.push(a);
+                acc_b.push(b);
+                (acc_a, acc_b)
+            },
+        );
+    Some(result)
 }
+
 pub fn part_two(input: &str) -> Option<u32> {
     None
 }

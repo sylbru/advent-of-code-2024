@@ -1,7 +1,7 @@
 advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    parse_one(input).map(run_one)
+    parse(input).map(run_one)
 }
 
 fn run_one((mut list_a, mut list_b): (Vec<i32>, Vec<i32>)) -> u32 {
@@ -12,7 +12,7 @@ fn run_one((mut list_a, mut list_b): (Vec<i32>, Vec<i32>)) -> u32 {
     result
 }
 
-fn parse_one(input: &str) -> Option<(Vec<i32>, Vec<i32>)> {
+fn parse(input: &str) -> Option<(Vec<i32>, Vec<i32>)> {
     let mut list_a = Vec::new();
     let mut list_b = Vec::new();
     let pairs_str = input.lines().filter_map(|line| line.split_once("   "));
@@ -27,7 +27,7 @@ fn parse_one(input: &str) -> Option<(Vec<i32>, Vec<i32>)> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    parse_one(input).map(run_two)
+    parse(input).map(run_two)
 }
 
 fn run_two((list_a, list_b): (Vec<i32>, Vec<i32>)) -> u32 {

@@ -31,7 +31,14 @@ pub fn part_two(input: &str) -> Option<u32> {
 }
 
 fn run_two((list_a, list_b): (Vec<i32>, Vec<i32>)) -> u32 {
-    31
+    let mut similarity_score: u32 = 0;
+
+    for a in list_a {
+        let a_occurrences_in_b: u32 = list_b.iter().filter(|&&b| b == a).count() as u32;
+        similarity_score += (a as u32) * a_occurrences_in_b;
+    }
+
+    similarity_score
 }
 
 #[cfg(test)]

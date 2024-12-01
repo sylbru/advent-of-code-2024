@@ -1,10 +1,12 @@
 advent_of_code::solution!(1);
 
 pub fn part_one(_input: &str) -> Option<u32> {
-    let pairs = [(1i32, 3i32), (2, 3), (3, 3), (3, 4), (3, 5), (4, 9)];
-    let result = pairs
-        .iter()
-        .fold(0, |acc, (a, b)| acc + ((a - b).abs() as u32));
+    let mut list_a = [3i32, 4, 2, 1, 3, 3];
+    list_a.sort();
+    let mut list_b = [4i32, 3, 5, 3, 9, 3];
+    list_b.sort();
+    let pairs = list_a.iter().zip(list_b);
+    let result = pairs.fold(0, |acc, (a, b)| acc + ((a - b).abs() as u32));
 
     Some(result)
 }

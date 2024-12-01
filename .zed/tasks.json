@@ -1,0 +1,12 @@
+// Static tasks configuration.
+//
+// Example:
+[
+    {
+        "label": "Test part one",
+        "command": "cargo test --bin $ZED_STEM part_one",
+        "use_new_terminal": false,
+        "reveal": "no_focus",
+        "hide": "on_success"
+    }
+]

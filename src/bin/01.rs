@@ -1,8 +1,9 @@
 advent_of_code::solution!(1);
 
 pub fn part_one(_input: &str) -> Option<u32> {
-    let distances = [2, 1, 0, 1, 2, 5];
-    let result = distances.iter().fold(0, |acc, x| acc + x);
+    let pairs = [(1i32, 3i32), (2, 3), (3, 3), (3, 4), (3, 5), (4, 9)];
+    let distances = pairs.iter().map(|(a, b)| (a - b).abs() as u32);
+    let result = distances.fold(0, |acc, x| acc + x);
     Some(result)
 }
 

@@ -1,25 +1,35 @@
 advent_of_code::solution!(1);
 
-pub fn part_one(_input: &str) -> Option<u32> {
-    let mut list_a = [3i32, 4, 2, 1, 3, 3];
-    list_a.sort();
-    let mut list_b = [4i32, 3, 5, 3, 9, 3];
-    list_b.sort();
-    let pairs = list_a.iter().zip(list_b);
-    let result = pairs.fold(0, |acc, (a, b)| acc + ((a - b).abs() as u32));
+pub fn part_one(input: &str) -> Option<u32> {
+    if let Some((mut list_a, mut list_b)) = parse_one(input) {
+        list_a.sort();
+        list_b.sort();
+        let pairs = list_a.iter().zip(list_b);
+        let result = pairs.fold(0, |acc, (a, b)| acc + ((a - b).abs() as u32));
 
-    Some(result)
+        Some(result)
+    } else {
+        None
+    }
 }
 
-pub fn part_two(_input: &str) -> Option<u32> {
+fn parse_one(input: &str) -> Option<(Vec<i32>, Vec<i32>)> {
+    let mut list_a = Vec::new();
+    let mut list_b = Vec::new();
+
+    for line in input.lines() {
+        if let Some((a_str, b_str)) = line.split_once("   ") {
+            if let (Ok(a), Ok(b)) = (a_str.parse::<i32>(), b_str.parse::<i32>()) {
+                list_a.push(a);
+                list_b.push(b);
+            }
+        }
+    }
+    Some((list_a, list_b))
+}
+pub fn part_two(input: &str) -> Option<u32> {
     None
 }
-
-// sort both lists
-// pair numbers (zip)
-// list of pairs to list of distances
-// sum the whole thing
-// (or compute and sum the distances in one pass)
 
 #[cfg(test)]
 mod tests {

@@ -1,7 +1,9 @@
 advent_of_code::solution!(1);
 
 pub fn part_one(_input: &str) -> Option<u32> {
-    Some(11)
+    let distances = [2, 1, 0, 1, 2, 5];
+    let result = distances.iter().fold(0, |acc, x| acc + x);
+    Some(result)
 }
 
 pub fn part_two(_input: &str) -> Option<u32> {

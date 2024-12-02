@@ -15,7 +15,7 @@ enum Direction {
     Invalid,
 }
 
-fn directionFromAdjacentLevels(first: u32, second: u32) -> Direction {
+fn direction_from_adjacent_levels(first: u32, second: u32) -> Direction {
     if first < second {
         Direction::Increasing
     } else if first > second {
@@ -43,10 +43,9 @@ fn is_safe(report: &&Vec<u32>) -> bool {
 }
 
 fn window_to_delta((first, second): (u32, u32)) -> (Direction, u32) {
-    (
-        directionFromAdjacentLevels(first, second),
-        first.abs_diff(second),
-    )
+    let direction = direction_from_adjacent_levels(first, second);
+    let difference = first.abs_diff(second);
+    (direction, difference)
 }
 
 fn parse(input: &str) -> Option<Vec<Vec<u32>>> {

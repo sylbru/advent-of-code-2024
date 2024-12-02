@@ -5,11 +5,11 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 fn run_one(reports: Vec<Vec<u32>>) -> u32 {
-    reports.iter().filter(is_safe).count() as u32
+    reports.iter().filter(|r| is_safe(r)).count() as u32
 }
 
 fn run_two(reports: Vec<Vec<u32>>) -> u32 {
-    reports.iter().filter(is_kinda_safe).count() as u32
+    reports.iter().filter(|r| is_kinda_safe(r)).count() as u32
 }
 
 enum Direction {
@@ -28,7 +28,7 @@ fn direction_from_adjacent_levels(first: u32, second: u32) -> Direction {
     }
 }
 
-fn is_safe(report: &&Vec<u32>) -> bool {
+fn is_safe(report: &Vec<u32>) -> bool {
     let deltas: Vec<(Direction, u32)> = (*report)
         .windows(2)
         .map(|window| window_to_delta((window[0], window[1])))
@@ -45,12 +45,12 @@ fn is_safe(report: &&Vec<u32>) -> bool {
     all_gradual && (all_increasing || all_decreasing)
 }
 
-fn is_kinda_safe(report: &&Vec<u32>) -> bool {
+fn is_kinda_safe(report: &Vec<u32>) -> bool {
     let simplified_reports = generate_simplified_reports(report);
-    simplified_reports.iter().any(|report| is_safe(&&report))
+    simplified_reports.iter().any(|report| is_safe(&report))
 }
 
-fn generate_simplified_reports(report: &&Vec<u32>) -> Vec<Vec<u32>> {
+fn generate_simplified_reports(report: &Vec<u32>) -> Vec<Vec<u32>> {
     let mut simplified_reports = Vec::new();
 
     for index in 0..report.len() {

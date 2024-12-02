@@ -13,7 +13,16 @@ fn is_safe(report: &&Vec<u32>) -> bool {
 }
 
 fn parse(input: &str) -> Option<Vec<Vec<u32>>> {
-    Some(vec![vec![42]])
+    let ints: Vec<Vec<u32>> = input
+        .lines()
+        .map(|line| {
+            line.split(" ")
+                .filter_map(|level| level.parse::<u32>().ok())
+                .collect()
+        })
+        .collect();
+
+    Some(ints)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {

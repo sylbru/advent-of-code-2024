@@ -8,8 +8,45 @@ fn run_one(reports: Vec<Vec<u32>>) -> u32 {
     reports.iter().filter(is_safe).count() as u32
 }
 
+enum Direction {
+    Unknown,
+    Decreasing,
+    Increasing,
+    Invalid,
+}
+
+fn directionFromAdjacentLevels(first: u32, second: u32) -> Direction {
+    if first < second {
+        Direction::Increasing
+    } else if first > second {
+        Direction::Decreasing
+    } else {
+        Direction::Invalid
+    }
+}
+
 fn is_safe(report: &&Vec<u32>) -> bool {
-    true
+    let deltas: Vec<(Direction, u32)> = (*report)
+        .windows(2)
+        .map(|window| window_to_delta((window[0], window[1])))
+        .collect();
+    let all_increasing = deltas
+        .iter()
+        .all(|(direction, _)| matches!(direction, Direction::Increasing));
+    let all_decreasing = deltas
+        .iter()
+        .all(|(direction, _)| matches!(direction, Direction::Decreasing));
+    let all_gradual = deltas
+        .iter()
+        .all(|(_, difference)| *difference >= 1 && *difference <= 3);
+    all_gradual && (all_increasing || all_decreasing)
+}
+
+fn window_to_delta((first, second): (u32, u32)) -> (Direction, u32) {
+    (
+        directionFromAdjacentLevels(first, second),
+        first.abs_diff(second),
+    )
 }
 
 fn parse(input: &str) -> Option<Vec<Vec<u32>>> {

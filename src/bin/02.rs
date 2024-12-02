@@ -9,7 +9,6 @@ fn run_one(reports: Vec<Vec<u32>>) -> u32 {
 }
 
 enum Direction {
-    Unknown,
     Decreasing,
     Increasing,
     Invalid,

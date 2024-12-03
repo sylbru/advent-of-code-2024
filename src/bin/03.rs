@@ -6,29 +6,20 @@ pub fn part_one(input: &str) -> Option<u32> {
     parse_one(input).map(run)
 }
 
-enum Instruction {
-    Multiply(u32, u32),
-    // Enable,
-    // Disable,
-}
-
-fn parse_one(input: &str) -> Option<Vec<Instruction>> {
+fn parse_one(input: &str) -> Option<Vec<(u32, u32)>> {
     let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
-    let mut instructions: Vec<Instruction> = Vec::new();
+    let mut instructions: Vec<(u32, u32)> = Vec::new();
 
     for (_, [a, b]) in re.captures_iter(input).map(|c| c.extract()) {
-        instructions.push(Instruction::Multiply(
-            a.parse::<u32>().unwrap(),
-            b.parse::<u32>().unwrap(),
-        ));
+        instructions.push((a.parse::<u32>().unwrap(), b.parse::<u32>().unwrap()));
     }
 
     Some(instructions)
 }
 
-fn parse_two(input: &str) -> Option<Vec<Instruction>> {
+fn parse_two(input: &str) -> Option<Vec<(u32, u32)>> {
     let re = Regex::new(r"mul\((\d+),(\d+)\)|do\(\)|don't\(\)").unwrap();
-    let mut instructions: Vec<Instruction> = Vec::new();
+    let mut instructions: Vec<(u32, u32)> = Vec::new();
     let mut enabled = true;
 
     for capture in re.captures_iter(input) {
@@ -43,7 +34,7 @@ fn parse_two(input: &str) -> Option<Vec<Instruction>> {
                     if let (Ok(num_a), Ok(num_b)) =
                         (a.as_str().parse::<u32>(), b.as_str().parse::<u32>())
                     {
-                        instructions.push(Instruction::Multiply(num_a, num_b));
+                        instructions.push((num_a, num_b));
                     }
                 }
             }
@@ -53,11 +44,8 @@ fn parse_two(input: &str) -> Option<Vec<Instruction>> {
     Some(instructions)
 }
 
-fn run(pairs: Vec<Instruction>) -> u32 {
-    pairs.iter().fold(0, |acc, instruction| match instruction {
-        Instruction::Multiply(a, b) => acc + a * b,
-        // _ => unimplemented!("Enable/Disable"),
-    })
+fn run(pairs: Vec<(u32, u32)>) -> u32 {
+    pairs.iter().fold(0, |acc, (a, b)| acc + a * b)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {

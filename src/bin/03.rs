@@ -19,25 +19,21 @@ fn parse_one(input: &str) -> Option<Vec<(u32, u32)>> {
 
 fn parse_two(input: &str) -> Option<Vec<(u32, u32)>> {
     let re = Regex::new(r"mul\((\d+),(\d+)\)|do\(\)|don't\(\)").unwrap();
-    let mut instructions: Vec<(u32, u32)> = Vec::new();
+    let mut instructions = Vec::new();
     let mut enabled = true;
 
     for capture in re.captures_iter(input) {
-        if let Some(full_match) = capture.get(0) {
-            let matched_str = full_match.as_str();
-            if matched_str == "do()" {
-                enabled = true;
-            } else if matched_str == "don't()" {
-                enabled = false;
-            } else if enabled {
-                if let (Some(a), Some(b)) = (capture.get(1), capture.get(2)) {
-                    if let (Ok(num_a), Ok(num_b)) =
-                        (a.as_str().parse::<u32>(), b.as_str().parse::<u32>())
-                    {
-                        instructions.push((num_a, num_b));
-                    }
+        let matched_str = capture.get(0).map(|m| m.as_str());
+
+        match matched_str {
+            Some("do()") => enabled = true,
+            Some("don't()") => enabled = false,
+            _ if enabled => {
+                if let (Ok(a), Ok(b)) = (capture[1].parse::<u32>(), capture[2].parse::<u32>()) {
+                    instructions.push((a, b));
                 }
             }
+            _ => {}
         }
     }
 

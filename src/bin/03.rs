@@ -9,7 +9,7 @@ fn parse(input: &str) -> Option<Vec<(u32, u32)>> {
 }
 
 fn run_one(pairs: Vec<(u32, u32)>) -> u32 {
-    161
+    pairs.iter().fold(0, |acc, &(a, b)| acc + a * b)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {

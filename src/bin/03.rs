@@ -1,3 +1,5 @@
+use regex::Regex;
+
 advent_of_code::solution!(3);
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -5,7 +7,14 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 fn parse(input: &str) -> Option<Vec<(u32, u32)>> {
-    Some(vec![(2, 4), (5, 5), (11, 8), (8, 5)])
+    let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
+    let mut instructions: Vec<(u32, u32)> = Vec::new();
+
+    for (_, [a, b]) in re.captures_iter(input).map(|c| c.extract()) {
+        instructions.push((a.parse::<u32>().unwrap(), b.parse::<u32>().unwrap()));
+    }
+
+    Some(instructions)
 }
 
 fn run_one(pairs: Vec<(u32, u32)>) -> u32 {

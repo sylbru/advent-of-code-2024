@@ -1,5 +1,3 @@
-use std::default;
-
 use regex::Regex;
 
 advent_of_code::solution!(3);
@@ -16,13 +14,21 @@ enum Instruction {
 
 fn parse(input: &str) -> Option<Vec<Instruction>> {
     let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
+    // let re = Regex::new(r"(mul\((\d+),(\d+)\)|do\(\)|don't\(\))").unwrap();
     let mut instructions: Vec<Instruction> = Vec::new();
 
-    for (_, [a, b]) in re.captures_iter(input).map(|c| c.extract()) {
-        instructions.push(Instruction::Multiply(
-            a.parse::<u32>().unwrap(),
-            b.parse::<u32>().unwrap(),
-        ));
+    for capture in re.captures_iter(input) {
+        if capture.len() == 3 {
+            let a = capture.get(1).unwrap().as_str();
+            let b = capture.get(2).unwrap().as_str();
+
+            instructions.push(Instruction::Multiply(
+                a.parse::<u32>().unwrap(),
+                b.parse::<u32>().unwrap(),
+            ));
+        } else {
+            unimplemented!("{}", capture.get(0).unwrap().as_str())
+        }
     }
 
     Some(instructions)
@@ -31,11 +37,11 @@ fn parse(input: &str) -> Option<Vec<Instruction>> {
 fn run_one(pairs: Vec<Instruction>) -> u32 {
     pairs.iter().fold(0, |acc, instruction| match instruction {
         Instruction::Multiply(a, b) => acc + a * b,
-        default => unimplemented!("Enable/Disable"),
+        _ => unimplemented!("Enable/Disable"),
     })
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
+pub fn part_two(_input: &str) -> Option<u32> {
     None
 }
 

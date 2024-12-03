@@ -30,25 +30,40 @@ fn parse(input: &str) -> Option<Vec<Instruction>> {
 }
 
 fn parse_two(input: &str) -> Option<Vec<Instruction>> {
-    let re = Regex::new(r"(mul\((\d+),(\d+)\)|do\(\)|don't\(\))").unwrap();
+    let re = Regex::new(r"mul\((\d+),(\d+)\)|do\(\)|don't\(\)").unwrap();
     let mut instructions: Vec<Instruction> = Vec::new();
     let mut enabled = true;
 
     for capture in re.captures_iter(input) {
-        if enabled && capture.len() == 3 {
-            let a = capture.get(1).unwrap().as_str();
-            let b = capture.get(2).unwrap().as_str();
-
-            instructions.push(Instruction::Multiply(
-                a.parse::<u32>().unwrap(),
-                b.parse::<u32>().unwrap(),
-            ));
-        } else if capture.get(0).unwrap().as_str() == "do()" {
-            enabled = true;
-        } else {
-            enabled = false;
+        if let Some(full_match) = capture.get(0) {
+            let matched_str = full_match.as_str();
+            if matched_str == "do()" {
+                enabled = true;
+            } else if matched_str == "don't()" {
+                enabled = false;
+            } else if enabled {
+                if let (Some(a), Some(b)) = (capture.get(1), capture.get(2)) {
+                    if let (Ok(num_a), Ok(num_b)) =
+                        (a.as_str().parse::<u32>(), b.as_str().parse::<u32>())
+                    {
+                        instructions.push(Instruction::Multiply(num_a, num_b));
+                    }
+                }
+            }
         }
+        // if capture.len() == 3 {
+        //     if enabled {
+        //         let a = capture.get(1).unwrap().as_str();
+        //         let b = capture.get(2).unwrap().as_str();
+
+        //         instructions.push(Instruction::Multiply(
+        //             a.parse::<u32>().unwrap(),
+        //             b.parse::<u32>().unwrap(),
+        //         ));
+        //     }
     }
+
+    println!("{}", instructions.len());
 
     Some(instructions)
 }

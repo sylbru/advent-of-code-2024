@@ -3,7 +3,7 @@ use regex::Regex;
 advent_of_code::solution!(3);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    parse(input).map(run)
+    parse_one(input).map(run)
 }
 
 enum Instruction {
@@ -12,14 +12,11 @@ enum Instruction {
     // Disable,
 }
 
-fn parse(input: &str) -> Option<Vec<Instruction>> {
+fn parse_one(input: &str) -> Option<Vec<Instruction>> {
     let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
     let mut instructions: Vec<Instruction> = Vec::new();
 
-    for capture in re.captures_iter(input) {
-        let a = capture.get(1).unwrap().as_str();
-        let b = capture.get(2).unwrap().as_str();
-
+    for (_, [a, b]) in re.captures_iter(input).map(|c| c.extract()) {
         instructions.push(Instruction::Multiply(
             a.parse::<u32>().unwrap(),
             b.parse::<u32>().unwrap(),
@@ -51,19 +48,7 @@ fn parse_two(input: &str) -> Option<Vec<Instruction>> {
                 }
             }
         }
-        // if capture.len() == 3 {
-        //     if enabled {
-        //         let a = capture.get(1).unwrap().as_str();
-        //         let b = capture.get(2).unwrap().as_str();
-
-        //         instructions.push(Instruction::Multiply(
-        //             a.parse::<u32>().unwrap(),
-        //             b.parse::<u32>().unwrap(),
-        //         ));
-        //     }
     }
-
-    println!("{}", instructions.len());
 
     Some(instructions)
 }

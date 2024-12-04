@@ -19,6 +19,9 @@ pub fn part_one(input: &str) -> Option<u32> {
                 if check_horizontal_backwards(&grid, x, y, width, height) {
                     count += 1;
                 }
+                if check_vertical(&grid, x, y, width, height) {
+                    count += 1;
+                }
             }
         }
     }
@@ -46,6 +49,10 @@ fn check_horizontal_backwards(
     x >= 3 && grid[y][x - 1] == 'M' && grid[y][x - 2] == 'A' && grid[y][x - 3] == 'S'
 }
 
+fn check_vertical(grid: &Vec<Vec<char>>, x: usize, y: usize, width: usize, height: usize) -> bool {
+    y <= width - 4 && grid[y + 1][x] == 'M' && grid[y + 2][x] == 'A' && grid[y + 3][x] == 'S'
+}
+
 pub fn part_two(_input: &str) -> Option<u32> {
     None
 }
@@ -57,7 +64,7 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, Some(3));
+        assert_eq!(result, Some(6));
     }
 
     #[test]

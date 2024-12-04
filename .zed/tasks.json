@@ -7,13 +7,17 @@
         "command": "cargo test --bin $ZED_STEM part_one",
         "use_new_terminal": false,
         "reveal": "no_focus",
-        "hide": "on_success"
+        "hide": "on_success",
+        "show_summary": false,
+        "show_command": false
     },
     {
         "label": "Test part two",
         "command": "cargo test --bin $ZED_STEM part_two",
         "use_new_terminal": false,
         "reveal": "no_focus",
-        "hide": "on_success"
+        "hide": "on_success",
+        "show_summary": false,
+        "show_command": false
     }
 ]

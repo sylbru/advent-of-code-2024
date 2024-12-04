@@ -16,6 +16,9 @@ pub fn part_one(input: &str) -> Option<u32> {
                 if check_horizontal(&grid, x, y, width, height) {
                     count += 1;
                 }
+                if check_horizontal_backwards(&grid, x, y, width, height) {
+                    count += 1;
+                }
             }
         }
     }
@@ -31,6 +34,16 @@ fn check_horizontal(
     height: usize,
 ) -> bool {
     x <= width - 4 && grid[y][x + 1] == 'M' && grid[y][x + 2] == 'A' && grid[y][x + 3] == 'S'
+}
+
+fn check_horizontal_backwards(
+    grid: &Vec<Vec<char>>,
+    x: usize,
+    y: usize,
+    width: usize,
+    height: usize,
+) -> bool {
+    x >= 3 && grid[y][x - 1] == 'M' && grid[y][x - 2] == 'A' && grid[y][x - 3] == 'S'
 }
 
 pub fn part_two(_input: &str) -> Option<u32> {

@@ -31,6 +31,12 @@ pub fn part_one(input: &str) -> Option<u32> {
                 if check_diagonal_nw_se_backwards(&grid, x, y, width, height) {
                     count += 1;
                 }
+                if check_diagonal_sw_ne(&grid, x, y, width, height) {
+                    count += 1;
+                }
+                if check_diagonal_sw_ne_backwards(&grid, x, y, width, height) {
+                    count += 1;
+                }
             }
         }
     }
@@ -94,10 +100,54 @@ fn check_diagonal_nw_se_backwards(
         && (grid[y - 1][x - 1] == 'M' && grid[y - 2][x - 2] == 'A' && grid[y - 3][x - 3] == 'S')
 }
 
-pub fn part_two(_input: &str) -> Option<u32> {
-    None
+fn check_diagonal_sw_ne(
+    grid: &Vec<Vec<char>>,
+    x: usize,
+    y: usize,
+    width: usize,
+    height: usize,
+) -> bool {
+    (y >= 3 && x <= width - 4)
+        && (grid[y - 1][x + 1] == 'M' && grid[y - 2][x + 2] == 'A' && grid[y - 3][x + 3] == 'S')
 }
 
+fn check_diagonal_sw_ne_backwards(
+    grid: &Vec<Vec<char>>,
+    x: usize,
+    y: usize,
+    width: usize,
+    height: usize,
+) -> bool {
+    (y <= height - 4 && x >= 3)
+        && (grid[y + 1][x - 1] == 'M' && grid[y + 2][x - 2] == 'A' && grid[y + 3][x - 3] == 'S')
+}
+
+fn check_x_mas(grid: &Vec<Vec<char>>, x: usize, y: usize, width: usize, height: usize) -> bool {
+    (y <= height - 2 && y >= 1 && x <= width - 2 && x >= 1)
+        && ((grid[y - 1][x - 1] == 'M' && grid[y + 1][x + 1] == 'S')
+            || (grid[y - 1][x - 1] == 'S' && grid[y + 1][x + 1] == 'M'))
+        && ((grid[y - 1][x + 1] == 'M' && grid[y + 1][x - 1] == 'S')
+            || (grid[y - 1][x + 1] == 'S' && grid[y + 1][x - 1] == 'M'))
+}
+
+pub fn part_two(input: &str) -> Option<u32> {
+    let grid: Vec<Vec<char>> = parse(input);
+    let mut count = 0;
+    let width: usize = grid.get(0).unwrap().len();
+    let height: usize = grid.len();
+
+    for y in 0..height {
+        for x in 0..width {
+            if grid[y][x] == 'A' {
+                if check_x_mas(&grid, x, y, width, height) {
+                    count += 1;
+                }
+            }
+        }
+    }
+
+    Some(count)
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -105,12 +155,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, Some(13));
+        assert_eq!(result, Some(18));
     }
 
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(9));
     }
 }

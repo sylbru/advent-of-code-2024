@@ -13,12 +13,24 @@ pub fn part_one(input: &str) -> Option<u32> {
     for y in 0..height {
         for x in 0..width {
             if grid[y][x] == 'X' {
-                count += 1;
+                if check_horizontal(&grid, x, y, width, height) {
+                    count += 1;
+                }
             }
         }
     }
 
     Some(count)
+}
+
+fn check_horizontal(
+    grid: &Vec<Vec<char>>,
+    x: usize,
+    y: usize,
+    width: usize,
+    height: usize,
+) -> bool {
+    x <= width - 4 && grid[y][x + 1] == 'M' && grid[y][x + 2] == 'A' && grid[y][x + 3] == 'S'
 }
 
 pub fn part_two(_input: &str) -> Option<u32> {

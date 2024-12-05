@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 advent_of_code::solution!(5);
 
 fn parse(input: &str) -> Option<(Vec<(u8, u8)>, Vec<Vec<u8>>)> {
@@ -91,20 +93,17 @@ fn run_two((ordering_rules, updates): (Vec<(u8, u8)>, Vec<Vec<u8>>)) -> usize {
 
 fn reorder(update: &Vec<u8>, ordering_rules: &Vec<(u8, u8)>) -> Vec<u8> {
     let mut update_copy = update.clone();
-    let broken_rules: Vec<_> = ordering_rules
-        .iter()
-        .filter(|ordering_rule| !is_respected(ordering_rule, &update))
-        .collect();
 
-    for (page_a, page_b) in &broken_rules {
-        let page_a_position = update.iter().position(|p| p == page_a).unwrap();
-        let page_b_position = update.iter().position(|p| p == page_b).unwrap();
-        update_copy.swap(page_a_position, page_b_position);
-    }
-    println!("original: {:?}", update);
-    println!("broken: {:?}", broken_rules.clone());
-    println!("fixed?: {:?}", update_copy);
-    assert!(is_ordered(&update_copy, ordering_rules));
+    update_copy.sort_by(|a, b| {
+        if ordering_rules.contains(&(*a, *b)) {
+            Ordering::Less
+        } else if ordering_rules.contains(&(*b, *a)) {
+            Ordering::Greater
+        } else {
+            Ordering::Equal
+        }
+    });
+
     update_copy
 }
 

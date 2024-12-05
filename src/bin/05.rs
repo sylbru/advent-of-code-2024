@@ -75,8 +75,26 @@ fn middle_page_number(update: &Vec<u8>) -> u8 {
     update[middle_index]
 }
 
-pub fn part_two(_input: &str) -> Option<u32> {
-    None
+fn run_two((ordering_rules, updates): (Vec<(u8, u8)>, Vec<Vec<u8>>)) -> usize {
+    let unordered: Vec<Vec<u8>> = updates
+        .iter()
+        .filter(|update| !is_ordered(update, &ordering_rules))
+        .cloned()
+        .collect();
+
+    unordered
+        .iter()
+        .map(|update| reorder(update.clone(), &ordering_rules))
+        .map(|update| middle_page_number(&update))
+        .fold(0, |acc, page_number| acc + (page_number as usize))
+}
+
+fn reorder(update: Vec<u8>, ordering_rules: &Vec<(u8, u8)>) -> Vec<u8> {
+    update.clone()
+}
+
+pub fn part_two(input: &str) -> Option<usize> {
+    parse(input).map(run_two)
 }
 
 #[cfg(test)]
@@ -92,6 +110,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(123));
     }
 }

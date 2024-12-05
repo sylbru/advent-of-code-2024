@@ -84,13 +84,28 @@ fn run_two((ordering_rules, updates): (Vec<(u8, u8)>, Vec<Vec<u8>>)) -> usize {
 
     unordered
         .iter()
-        .map(|update| reorder(update.clone(), &ordering_rules))
+        .map(|update| reorder(update, &ordering_rules))
         .map(|update| middle_page_number(&update))
         .fold(0, |acc, page_number| acc + (page_number as usize))
 }
 
-fn reorder(update: Vec<u8>, ordering_rules: &Vec<(u8, u8)>) -> Vec<u8> {
-    update.clone()
+fn reorder(update: &Vec<u8>, ordering_rules: &Vec<(u8, u8)>) -> Vec<u8> {
+    let mut update_copy = update.clone();
+    let broken_rules: Vec<_> = ordering_rules
+        .iter()
+        .filter(|ordering_rule| !is_respected(ordering_rule, &update))
+        .collect();
+
+    for (page_a, page_b) in &broken_rules {
+        let page_a_position = update.iter().position(|p| p == page_a).unwrap();
+        let page_b_position = update.iter().position(|p| p == page_b).unwrap();
+        update_copy.swap(page_a_position, page_b_position);
+    }
+    println!("original: {:?}", update);
+    println!("broken: {:?}", broken_rules.clone());
+    println!("fixed?: {:?}", update_copy);
+    assert!(is_ordered(&update_copy, ordering_rules));
+    update_copy
 }
 
 pub fn part_two(input: &str) -> Option<usize> {

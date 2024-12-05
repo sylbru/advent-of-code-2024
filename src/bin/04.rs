@@ -13,29 +13,21 @@ pub fn part_one(input: &str) -> Option<u32> {
     for y in 0..height {
         for x in 0..width {
             if grid[y][x] == 'X' {
-                if check_horizontal(&grid, x, y, width) {
-                    count += 1;
-                }
-                if check_horizontal_backwards(&grid, x, y) {
-                    count += 1;
-                }
-                if check_vertical(&grid, x, y, width) {
-                    count += 1;
-                }
-                if check_vertical_backwards(&grid, x, y) {
-                    count += 1;
-                }
-                if check_diagonal_nw_se(&grid, x, y, width, height) {
-                    count += 1;
-                }
-                if check_diagonal_nw_se_backwards(&grid, x, y) {
-                    count += 1;
-                }
-                if check_diagonal_sw_ne(&grid, x, y, width) {
-                    count += 1;
-                }
-                if check_diagonal_sw_ne_backwards(&grid, x, y, width) {
-                    count += 1;
+                let checks = [
+                    check_horizontal(&grid, x, y, width),
+                    check_horizontal_backwards(&grid, x, y),
+                    check_vertical(&grid, x, y, width),
+                    check_vertical_backwards(&grid, x, y),
+                    check_diagonal_nw_se(&grid, x, y, width, height),
+                    check_diagonal_nw_se_backwards(&grid, x, y),
+                    check_diagonal_sw_ne(&grid, x, y, width),
+                    check_diagonal_sw_ne_backwards(&grid, x, y, width),
+                ];
+
+                for check in checks {
+                    if check {
+                        count += 1;
+                    }
                 }
             }
         }

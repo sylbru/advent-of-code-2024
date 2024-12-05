@@ -12,7 +12,15 @@ fn parse(input: &str) -> Option<(Vec<(u8, u8)>, Vec<Vec<u8>>)> {
 }
 
 fn parse_ordering_rules(rules: &str) -> Vec<(u8, u8)> {
-    vec![(1, 2)]
+    rules
+        .trim()
+        .split("\n")
+        .filter_map(|rule| {
+            rule.split_once("|").map(|(page_a, page_b)| {
+                (page_a.parse::<u8>().unwrap(), page_b.parse::<u8>().unwrap())
+            })
+        })
+        .collect()
 }
 
 fn parse_updates(updates: &str) -> Vec<Vec<u8>> {

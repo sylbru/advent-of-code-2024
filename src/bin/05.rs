@@ -14,8 +14,18 @@ fn parse(input: &str) -> Option<(Vec<(u8, u8)>, Vec<Vec<u8>>)> {
 fn parse_ordering_rules(rules: &str) -> Vec<(u8, u8)> {
     vec![(1, 2)]
 }
+
 fn parse_updates(updates: &str) -> Vec<Vec<u8>> {
-    vec![vec![42]]
+    updates
+        .trim()
+        .split("\n")
+        .map(|update| {
+            update
+                .split(",")
+                .map(|page_number| page_number.parse::<u8>().unwrap())
+                .collect()
+        })
+        .collect()
 }
 
 pub fn part_one(input: &str) -> Option<u8> {

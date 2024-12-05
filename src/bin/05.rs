@@ -36,19 +36,25 @@ fn parse_updates(updates: &str) -> Vec<Vec<u8>> {
         .collect()
 }
 
-pub fn part_one(input: &str) -> Option<u8> {
-    let ordered: Vec<Vec<u8>> = vec![
-        vec![75, 47, 61, 53, 29],
-        vec![97, 61, 53, 29, 13],
-        vec![75, 29, 13],
-    ];
+fn run_one((ordering_rules, updates): (Vec<(u8, u8)>, Vec<Vec<u8>>)) -> usize {
+    let ordered: Vec<Vec<u8>> = updates
+        .iter()
+        .filter(|update| is_ordered(update, &ordering_rules))
+        .cloned()
+        .collect();
 
-    Some(
-        ordered
-            .iter()
-            .map(|update| middle_page_number(update))
-            .fold(0, |acc, page_number| acc + page_number),
-    )
+    ordered
+        .iter()
+        .map(|update| middle_page_number(update))
+        .fold(0, |acc, page_number| acc + (page_number as usize))
+}
+
+fn is_ordered(update: &Vec<u8>, ordering_rules: &Vec<(u8, u8)>) -> bool {
+    true
+}
+
+pub fn part_one(input: &str) -> Option<usize> {
+    parse(input).map(run_one)
 }
 
 fn middle_page_number(update: &Vec<u8>) -> u8 {

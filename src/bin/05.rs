@@ -50,7 +50,20 @@ fn run_one((ordering_rules, updates): (Vec<(u8, u8)>, Vec<Vec<u8>>)) -> usize {
 }
 
 fn is_ordered(update: &Vec<u8>, ordering_rules: &Vec<(u8, u8)>) -> bool {
-    true
+    ordering_rules
+        .iter()
+        .all(|ordering_rule| is_respected(ordering_rule, update))
+}
+
+fn is_respected((page_a, page_b): &(u8, u8), update: &Vec<u8>) -> bool {
+    let pos_a = update.iter().position(|p| p == page_a);
+    let pos_b = update.iter().position(|p| p == page_b);
+
+    match (pos_a, pos_b) {
+        (None, _) | (_, None) => true,
+        (Some(a), Some(b)) if a < b => true,
+        _ => false,
+    }
 }
 
 pub fn part_one(input: &str) -> Option<usize> {

@@ -1,5 +1,23 @@
 advent_of_code::solution!(5);
 
+fn parse(input: &str) -> Option<(Vec<(u8, u8)>, Vec<Vec<u8>>)> {
+    input
+        .split_once("\n\n")
+        .map(|(raw_ordering_rules, raw_updates)| {
+            (
+                parse_ordering_rules(raw_ordering_rules),
+                parse_updates(raw_updates),
+            )
+        })
+}
+
+fn parse_ordering_rules(rules: &str) -> Vec<(u8, u8)> {
+    vec![(1, 2)]
+}
+fn parse_updates(updates: &str) -> Vec<Vec<u8>> {
+    vec![vec![42]]
+}
+
 pub fn part_one(input: &str) -> Option<u8> {
     let ordered: Vec<Vec<u8>> = vec![
         vec![75, 47, 61, 53, 29],

@@ -71,12 +71,7 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     let dimension: isize = grid.len() as isize;
 
     loop {
-        desired_position = match guard.direction {
-            Direction::Up => (guard.position.0, guard.position.1 - 1),
-            Direction::Down => (guard.position.0, guard.position.1 + 1),
-            Direction::Left => (guard.position.0 - 1, guard.position.1),
-            Direction::Right => (guard.position.0 + 1, guard.position.1),
-        };
+        desired_position = position_ahead(&guard);
 
         if !(desired_position.0 < dimension
             && desired_position.0 >= 0
@@ -113,6 +108,15 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
 
     // println!("{}", grid_to_string(&grid));
     visited_slots
+}
+
+fn position_ahead(guard: &Guard) -> (isize, isize) {
+    match guard.direction {
+        Direction::Up => (guard.position.0, guard.position.1 - 1),
+        Direction::Down => (guard.position.0, guard.position.1 + 1),
+        Direction::Left => (guard.position.0 - 1, guard.position.1),
+        Direction::Right => (guard.position.0 + 1, guard.position.1),
+    }
 }
 
 #[allow(dead_code)]

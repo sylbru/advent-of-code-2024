@@ -73,11 +73,7 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     loop {
         desired_position = position_ahead(&guard);
 
-        if !(desired_position.0 < dimension
-            && desired_position.0 >= 0
-            && desired_position.1 < dimension
-            && desired_position.1 >= 0)
-        {
+        if !is_position_in_bounds(desired_position, dimension) {
             // out of the loop, means that the guard is now out of bounds
             // we need to add one to visited_slots
             match grid[guard.position.1 as usize][guard.position.0 as usize] {
@@ -108,6 +104,10 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
 
     // println!("{}", grid_to_string(&grid));
     visited_slots
+}
+
+fn is_position_in_bounds((x, y): (isize, isize), dimension: isize) -> bool {
+    x >= 0 && x < dimension && y >= 0 && y < dimension
 }
 
 fn position_ahead(guard: &Guard) -> (isize, isize) {

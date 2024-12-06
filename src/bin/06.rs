@@ -67,20 +67,25 @@ pub fn part_one(input: &str) -> Option<isize> {
 fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     let mut visited_slots = 0;
 
-    let mut desired_position = match guard.direction {
-        Direction::Up => (guard.position.0, guard.position.1 - 1),
-        Direction::Down => (guard.position.0, guard.position.1 + 1),
-        Direction::Left => (guard.position.0 - 1, guard.position.1),
-        Direction::Right => (guard.position.0 + 1, guard.position.1),
-    };
-
+    let mut desired_position;
     let dimension: isize = grid.len() as isize;
 
-    while desired_position.0 < dimension
-        && desired_position.0 >= 0
-        && desired_position.1 < dimension
-        && desired_position.1 >= 0
-    {
+    loop {
+        desired_position = match guard.direction {
+            Direction::Up => (guard.position.0, guard.position.1 - 1),
+            Direction::Down => (guard.position.0, guard.position.1 + 1),
+            Direction::Left => (guard.position.0 - 1, guard.position.1),
+            Direction::Right => (guard.position.0 + 1, guard.position.1),
+        };
+
+        if !(desired_position.0 < dimension
+            && desired_position.0 >= 0
+            && desired_position.1 < dimension
+            && desired_position.1 >= 0)
+        {
+            break;
+        }
+
         match grid[desired_position.1 as usize][desired_position.0 as usize] {
             Slot::Free | Slot::Visited => {
                 match grid[guard.position.1 as usize][guard.position.0 as usize] {
@@ -95,13 +100,6 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
             }
             Slot::Busy => guard.direction = to_the_right(guard.direction),
         }
-
-        desired_position = match guard.direction {
-            Direction::Up => (guard.position.0, guard.position.1 - 1),
-            Direction::Down => (guard.position.0, guard.position.1 + 1),
-            Direction::Left => (guard.position.0 - 1, guard.position.1),
-            Direction::Right => (guard.position.0 + 1, guard.position.1),
-        };
     }
 
     // out of the loop, means that the guard is now out of bounds

@@ -118,11 +118,7 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
         _ => {}
     }
 
-    // grid.iter()
-    //     .map(|line| line.iter().filter(|slot| slot == &&Slot::Free).count() as isize)
-    //     .sum()
-    // println!("{:?}", grid);
-    // println!("{:?}", guard);
+    // println!("{}", grid_to_string(&grid));
     visited_slots
 }
 

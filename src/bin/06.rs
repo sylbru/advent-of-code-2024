@@ -83,6 +83,15 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
             && desired_position.1 < dimension
             && desired_position.1 >= 0)
         {
+            // out of the loop, means that the guard is now out of bounds
+            // we need to add one to visited_slots
+            match grid[guard.position.1 as usize][guard.position.0 as usize] {
+                Slot::Free => {
+                    visited_slots += 1;
+                    grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
+                }
+                _ => {}
+            }
             break;
         }
 
@@ -100,16 +109,6 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
             }
             Slot::Busy => guard.direction = to_the_right(guard.direction),
         }
-    }
-
-    // out of the loop, means that the guard is now out of bounds
-    // we need to add one to visited_slots (didn't update the grid but who cares)
-    match grid[guard.position.1 as usize][guard.position.0 as usize] {
-        Slot::Free => {
-            visited_slots += 1;
-            grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
-        }
-        _ => {}
     }
 
     // println!("{}", grid_to_string(&grid));

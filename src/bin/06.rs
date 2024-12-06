@@ -71,28 +71,22 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     let dimension: isize = grid.len() as isize;
 
     loop {
+        // Mark current position as visited straight away if it’s not already
+        if grid[guard.position.1 as usize][guard.position.0 as usize] == Slot::Free {
+            grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
+            visited_slots += 1;
+        }
+
         desired_position = position_ahead(&guard);
 
         if !is_position_in_bounds(desired_position, dimension) {
             // out of the loop, means that the guard is now out of bounds
             // we need to add one to visited_slots
-            if grid[guard.position.1 as usize][guard.position.0 as usize] == Slot::Free {
-                visited_slots += 1;
-                grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
-            }
             break;
         }
 
         match grid[desired_position.1 as usize][desired_position.0 as usize] {
             Slot::Free | Slot::Visited => {
-                match grid[guard.position.1 as usize][guard.position.0 as usize] {
-                    Slot::Free => {
-                        visited_slots += 1;
-                        grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited
-                    }
-                    _ => {}
-                }
-
                 guard.position = desired_position;
             }
             Slot::Busy => guard.direction = to_the_right(guard.direction),

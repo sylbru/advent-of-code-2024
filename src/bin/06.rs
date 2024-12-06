@@ -76,12 +76,9 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
         if !is_position_in_bounds(desired_position, dimension) {
             // out of the loop, means that the guard is now out of bounds
             // we need to add one to visited_slots
-            match grid[guard.position.1 as usize][guard.position.0 as usize] {
-                Slot::Free => {
-                    visited_slots += 1;
-                    grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
-                }
-                _ => {}
+            if grid[guard.position.1 as usize][guard.position.0 as usize] == Slot::Free {
+                visited_slots += 1;
+                grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
             }
             break;
         }

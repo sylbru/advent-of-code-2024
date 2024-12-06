@@ -74,11 +74,11 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
         Direction::Right => (guard.position.0 + 1, guard.position.1),
     };
 
-    const DIMENSION: isize = 130;
+    let dimension: isize = grid.len() as isize;
 
-    while desired_position.0 < DIMENSION
+    while desired_position.0 < dimension
         && desired_position.0 >= 0
-        && desired_position.1 < DIMENSION
+        && desired_position.1 < dimension
         && desired_position.1 >= 0
     {
         match grid[desired_position.1 as usize][desired_position.0 as usize] {
@@ -104,10 +104,6 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
         };
     }
 
-    println!(
-        "{:?}",
-        grid[guard.position.1 as usize][guard.position.0 as usize]
-    );
     // out of the loop, means that the guard is now out of bounds
     // we need to add one to visited_slots (didn't update the grid but who cares)
     match grid[guard.position.1 as usize][guard.position.0 as usize] {
@@ -122,6 +118,7 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     visited_slots
 }
 
+#[allow(dead_code)]
 fn grid_to_string(grid: &Vec<Vec<Slot>>) -> String {
     grid.iter()
         .map(|row| {

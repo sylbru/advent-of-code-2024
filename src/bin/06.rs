@@ -74,7 +74,7 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
         Direction::Right => (guard.position.0 + 1, guard.position.1),
     };
 
-    const DIMENSION: isize = 10;
+    const DIMENSION: isize = 130;
 
     while desired_position.0 < DIMENSION
         && desired_position.0 >= 0
@@ -82,15 +82,17 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
         && desired_position.1 >= 0
     {
         match grid[desired_position.1 as usize][desired_position.0 as usize] {
-            Slot::Free => {
-                // set previous to visited
-                grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
-                // move guard
+            Slot::Free | Slot::Visited => {
+                match grid[guard.position.1 as usize][guard.position.0 as usize] {
+                    Slot::Free => {
+                        visited_slots += 1;
+                        grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited
+                    }
+                    _ => {}
+                }
+
                 guard.position = desired_position;
-                // increment count
-                visited_slots += 1;
             }
-            Slot::Visited => guard.position = desired_position,
             Slot::Busy => guard.direction = to_the_right(guard.direction),
         }
 
@@ -122,6 +124,21 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     // println!("{:?}", grid);
     // println!("{:?}", guard);
     visited_slots
+}
+
+fn grid_to_string(grid: &Vec<Vec<Slot>>) -> String {
+    grid.iter()
+        .map(|row| {
+            row.iter()
+                .map(|slot| match slot {
+                    Slot::Free => '.',
+                    Slot::Busy => '#',
+                    Slot::Visited => 'X',
+                })
+                .collect::<String>()
+        })
+        .collect::<Vec<String>>()
+        .join("\n")
 }
 
 fn to_the_right(direction: Direction) -> Direction {

@@ -1,12 +1,12 @@
 advent_of_code::solution!(6);
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Guard {
     position: (isize, isize),
     direction: Direction,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 enum Slot {
     Free,
     Busy,
@@ -72,8 +72,22 @@ fn run_one((grid, guard): (Vec<Vec<Slot>>, Guard)) -> isize {
 }
 
 fn run_two((grid, guard): (Vec<Vec<Slot>>, Guard)) -> isize {
-    let returned = run_loop((grid, guard));
-    42
+    let mut efficient_obstructions = 0;
+    let dimension: isize = grid.len() as isize;
+
+    for y in 0..dimension {
+        for x in 0..dimension {
+            if grid[y as usize][x as usize] == Slot::Free {
+                let mut grid_copy = grid.clone();
+                grid_copy[y as usize][x as usize] = Slot::Busy;
+
+                if let RouteResult::Loops = run_loop((grid_copy, guard.clone())) {
+                    efficient_obstructions += 1;
+                }
+            }
+        }
+    }
+    efficient_obstructions
 }
 
 #[derive(Debug, PartialEq)]
@@ -115,7 +129,6 @@ fn run_loop((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> RouteResult {
         }
     }
 
-    // println!("{}", grid_to_string(&grid));
     RouteResult::Finished(visited_slots)
 }
 

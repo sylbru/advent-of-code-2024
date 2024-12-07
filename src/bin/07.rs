@@ -1,5 +1,7 @@
 advent_of_code::solution!(7);
 
+use itertools::Itertools;
+
 pub fn part_one(input: &str) -> Option<u32> {
     println!("{:?}", parse(input));
     parse(input).map(run_one)
@@ -13,8 +15,37 @@ fn run_one(tests: Vec<(u32, Vec<u32>)>) -> u32 {
         .sum()
 }
 
+#[derive(Debug, Clone, Copy)]
+enum Operator {
+    Addition,
+    Multiplication,
+}
+
 fn is_valid((result, operands): &(u32, Vec<u32>)) -> bool {
-    *result == 190u32 || *result == 3267u32 || *result == 292u32
+    let operator_combinations = itertools::repeat_n(
+        [Operator::Addition, Operator::Multiplication],
+        operands.len() - 1,
+    )
+    .multi_cartesian_product();
+
+    for operators in operator_combinations {
+        if *result == apply_operators_to_operands(operators, operands) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+fn apply_operators_to_operands(operators: Vec<Operator>, operands: &Vec<u32>) -> u32 {
+    let (start_value, remaining_operands) = operands.split_at(1);
+    remaining_operands
+        .iter()
+        .zip(operators)
+        .fold(start_value[0], |acc, (operand, operator)| match operator {
+            Operator::Addition => acc + operand,
+            Operator::Multiplication => acc * operand,
+        })
 }
 
 fn parse(input: &str) -> Option<Vec<(u32, Vec<u32>)>> {
@@ -35,7 +66,7 @@ fn parse(input: &str) -> Option<Vec<(u32, Vec<u32>)>> {
     )
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
+pub fn part_two(_input: &str) -> Option<u32> {
     None
 }
 

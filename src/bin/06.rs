@@ -29,7 +29,7 @@ impl From<char> for Slot {
 //         match (self, other) k
 //     }
 // }
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 enum Direction {
     Up,
     Right,
@@ -76,6 +76,7 @@ fn run_two((grid, guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     42
 }
 
+#[derive(Debug, PartialEq)]
 enum RouteResult {
     Finished(isize), // Finished with a number of visited slots
     Loops,           // Ends up in a loop
@@ -85,8 +86,15 @@ fn run_loop((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> RouteResult {
 
     let mut desired_position;
     let dimension: isize = grid.len() as isize;
+    let mut history: Vec<((isize, isize), Direction)> = Vec::new();
 
     loop {
+        if history.contains(&(guard.position, guard.direction)) {
+            return RouteResult::Loops;
+        }
+
+        history.push((guard.position, guard.direction));
+
         // Mark current position as visited straight away if it’s not already
         if grid[guard.position.1 as usize][guard.position.0 as usize] == Slot::Free {
             grid[guard.position.1 as usize][guard.position.0 as usize] = Slot::Visited;
@@ -161,6 +169,22 @@ mod tests {
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
         assert_eq!(result, Some(41));
+    }
+
+    #[test]
+    fn test_loop() {
+        let mut grid = vec![
+            vec![Slot::Free, Slot::Busy, Slot::Free],
+            vec![Slot::Free, Slot::Free, Slot::Busy],
+            vec![Slot::Busy, Slot::Free, Slot::Free],
+            vec![Slot::Free, Slot::Busy, Slot::Free],
+        ];
+        let mut guard = Guard {
+            position: (1, 2),
+            direction: Direction::Up,
+        };
+        let result = run_loop((grid, guard));
+        assert_eq!(result, RouteResult::Loops);
     }
 
     #[test]

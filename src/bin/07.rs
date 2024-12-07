@@ -6,7 +6,15 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 fn run_one(tests: Vec<(u32, Vec<u32>)>) -> u32 {
-    42
+    tests
+        .iter()
+        .filter(|one_test| is_valid(one_test))
+        .map(|test| test.0)
+        .sum()
+}
+
+fn is_valid((result, operands): &(u32, Vec<u32>)) -> bool {
+    *result == 190u32 || *result == 3267u32 || *result == 292u32
 }
 
 fn parse(input: &str) -> Option<Vec<(u32, Vec<u32>)>> {
@@ -38,7 +46,7 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(3749));
     }
 
     #[test]

@@ -15,10 +15,28 @@ fn run_one(tests: Vec<(usize, Vec<usize>)>) -> usize {
         .sum()
 }
 
+fn run_two(tests: Vec<(usize, Vec<usize>)>) -> usize {
+    tests
+        .iter()
+        .filter(|one_test| {
+            is_valid(
+                one_test,
+                vec![
+                    Operator::Addition,
+                    Operator::Multiplication,
+                    Operator::Concatenation,
+                ],
+            )
+        })
+        .map(|test| test.0)
+        .sum()
+}
+
 #[derive(Debug, Clone, Copy)]
 enum Operator {
     Addition,
     Multiplication,
+    Concatenation,
 }
 
 fn is_valid((result, operands): &(usize, Vec<usize>), operators: Vec<Operator>) -> bool {
@@ -42,6 +60,11 @@ fn apply_operators_to_operands(operators: Vec<Operator>, operands: &Vec<usize>) 
         .fold(start_value[0], |acc, (operand, operator)| match operator {
             Operator::Addition => acc + operand,
             Operator::Multiplication => acc * operand,
+            Operator::Concatenation => {
+                let mut acc_string = acc.to_string();
+                acc_string.push_str(&operand.to_string());
+                acc_string.parse().ok().unwrap()
+            }
         })
 }
 
@@ -63,13 +86,22 @@ fn parse(input: &str) -> Option<Vec<(usize, Vec<usize>)>> {
     )
 }
 
-pub fn part_two(_input: &str) -> Option<usize> {
-    None
+pub fn part_two(input: &str) -> Option<usize> {
+    parse(input).map(run_two)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_concat() {
+        let acc = 123;
+        let operand = 456;
+        let mut acc_string = acc.to_string();
+        acc_string.push_str(&operand.to_string());
+        assert_eq!(123456, acc_string.parse().ok().unwrap());
+    }
 
     #[test]
     fn test_part_one() {
@@ -80,6 +112,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(11387));
     }
 }

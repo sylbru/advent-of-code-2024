@@ -64,7 +64,23 @@ pub fn part_one(input: &str) -> Option<isize> {
     parse(input).map(run_one)
 }
 
-fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
+fn run_one((grid, guard): (Vec<Vec<Slot>>, Guard)) -> isize {
+    match run_loop((grid, guard)) {
+        RouteResult::Finished(visited) => visited,
+        RouteResult::Loops => panic!("Should not loop in part one!"),
+    }
+}
+
+fn run_two((grid, guard): (Vec<Vec<Slot>>, Guard)) -> isize {
+    let returned = run_loop((grid, guard));
+    42
+}
+
+enum RouteResult {
+    Finished(isize), // Finished with a number of visited slots
+    Loops,           // Ends up in a loop
+}
+fn run_loop((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> RouteResult {
     let mut visited_slots = 0;
 
     let mut desired_position;
@@ -86,15 +102,13 @@ fn run_one((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> isize {
         }
 
         match grid[desired_position.1 as usize][desired_position.0 as usize] {
-            Slot::Free | Slot::Visited => {
-                guard.position = desired_position;
-            }
+            Slot::Free | Slot::Visited => guard.position = desired_position,
             Slot::Busy => guard.direction = to_the_right(guard.direction),
         }
     }
 
     // println!("{}", grid_to_string(&grid));
-    visited_slots
+    RouteResult::Finished(visited_slots)
 }
 
 fn is_position_in_bounds((x, y): (isize, isize), dimension: isize) -> bool {
@@ -135,8 +149,8 @@ fn to_the_right(direction: Direction) -> Direction {
     }
 }
 
-pub fn part_two(_input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<isize> {
+    parse(input).map(run_two)
 }
 
 #[cfg(test)]
@@ -152,6 +166,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(6));
     }
 }

@@ -10,7 +10,7 @@ pub fn part_one(input: &str) -> Option<usize> {
 fn run_one(tests: Vec<(usize, Vec<usize>)>) -> usize {
     tests
         .iter()
-        .filter(|one_test| is_valid(one_test))
+        .filter(|one_test| is_valid(one_test, vec![Operator::Addition, Operator::Multiplication]))
         .map(|test| test.0)
         .sum()
 }
@@ -21,12 +21,9 @@ enum Operator {
     Multiplication,
 }
 
-fn is_valid((result, operands): &(usize, Vec<usize>)) -> bool {
-    let operator_combinations = itertools::repeat_n(
-        [Operator::Addition, Operator::Multiplication],
-        operands.len() - 1,
-    )
-    .multi_cartesian_product();
+fn is_valid((result, operands): &(usize, Vec<usize>), operators: Vec<Operator>) -> bool {
+    let operator_combinations =
+        itertools::repeat_n(operators, operands.len() - 1).multi_cartesian_product();
 
     for operators in operator_combinations {
         if *result == apply_operators_to_operands(operators, operands) {

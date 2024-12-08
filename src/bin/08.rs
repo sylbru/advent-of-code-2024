@@ -80,25 +80,20 @@ fn run_one(map: Map) -> u32 {
 
     for (frequency, antennas_positions) in &antennas_positions_by_frequency {
         for (a, b) in antennas_positions.iter().tuple_combinations::<(_, _)>() {
-            let dx = (b.x - a.x).abs();
-            let dy = (b.y - a.y).abs();
-
-            let antinode_a_x = if a.x < b.x { a.x - dx } else { a.x + dx };
-            let antinode_a_y = if a.y < b.y { a.y - dy } else { a.y + dy };
-
-            let antinode_b_x = if a.x < b.x { b.x + dx } else { b.x - dx };
-            let antinode_b_y = if a.y < b.y { b.y + dy } else { b.y - dy };
+            let dx = (b.x - a.x);
+            let dy = (b.y - a.y);
 
             let antinode_a = Position {
-                x: antinode_a_x,
-                y: antinode_a_y,
+                x: a.x - dx,
+                y: a.y - dy,
             };
             if is_in_bounds(&antinode_a, map.dimension) {
                 antinodes.insert(antinode_a.clone());
             }
+
             let antinode_b = Position {
-                x: antinode_b_x,
-                y: antinode_b_y,
+                x: b.x + dx,
+                y: b.y + dy,
             };
             if is_in_bounds(&antinode_b, map.dimension) {
                 antinodes.insert(antinode_b.clone());

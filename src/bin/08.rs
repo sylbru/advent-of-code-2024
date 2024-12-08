@@ -56,7 +56,12 @@ fn parse(input: &str) -> Option<Map> {
     })
 }
 
-fn run_one(map: Map) -> u32 {
+enum Part {
+    One,
+    Two,
+}
+
+fn run(map: Map, part: Part) -> u32 {
     let mut antennas_positions_by_frequency: HashMap<char, Vec<Position>> = HashMap::new();
 
     for antenna in map.antennas.iter() {
@@ -70,23 +75,28 @@ fn run_one(map: Map) -> u32 {
 
     for (frequency, antennas_positions) in &antennas_positions_by_frequency {
         for (a, b) in antennas_positions.iter().tuple_combinations::<(_, _)>() {
-            let dx = (b.x - a.x);
-            let dy = (b.y - a.y);
+            match part {
+                Part::One => {
+                    let dx = (b.x - a.x);
+                    let dy = (b.y - a.y);
 
-            let antinode_a = Position {
-                x: a.x - dx,
-                y: a.y - dy,
-            };
-            if is_in_bounds(&antinode_a, map.dimension) {
-                antinodes.insert(antinode_a.clone());
-            }
+                    let antinode_a = Position {
+                        x: a.x - dx,
+                        y: a.y - dy,
+                    };
+                    if is_in_bounds(&antinode_a, map.dimension) {
+                        antinodes.insert(antinode_a.clone());
+                    }
 
-            let antinode_b = Position {
-                x: b.x + dx,
-                y: b.y + dy,
-            };
-            if is_in_bounds(&antinode_b, map.dimension) {
-                antinodes.insert(antinode_b.clone());
+                    let antinode_b = Position {
+                        x: b.x + dx,
+                        y: b.y + dy,
+                    };
+                    if is_in_bounds(&antinode_b, map.dimension) {
+                        antinodes.insert(antinode_b.clone());
+                    }
+                }
+                Part::Two => {}
             }
         }
     }
@@ -101,7 +111,7 @@ fn is_in_bounds(antinode: &Position, dimension: u8) -> bool {
         && antinode.y < dimension as i8
 }
 pub fn part_one(input: &str) -> Option<u32> {
-    parse(input).map(run_one)
+    parse(input).map(|map| run(map, Part::One))
 }
 
 pub fn part_two(input: &str) -> Option<u32> {

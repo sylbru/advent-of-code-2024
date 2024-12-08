@@ -57,16 +57,6 @@ fn parse(input: &str) -> Option<Map> {
 }
 
 fn run_one(map: Map) -> u32 {
-    /*
-    - all pairs of antennas of the same frequency
-    - antinodes : Vec<Position> or HashSet<Position>
-    - for each pair, create two antinodes
-    - ignore out of bounds antinodes
-    - count unique antinodes (or just set length)(or count true values in bool matrix)
-    */
-    // initialise a hashmap: char to Vec<Position>
-    // go through all antennas to build the hashmap
-    // for each entry, build pairs then build antinodes
     let mut antennas_positions_by_frequency: HashMap<char, Vec<Position>> = HashMap::new();
 
     for antenna in map.antennas.iter() {

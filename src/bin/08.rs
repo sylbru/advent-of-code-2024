@@ -1,12 +1,20 @@
 #![allow(unused)]
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+
+use itertools::Itertools;
 advent_of_code::solution!(8);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Hash, Eq)]
 struct Position {
     x: i8,
     y: i8,
+}
+
+impl PartialEq for Position {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
+    }
 }
 
 #[derive(Debug)]
@@ -67,10 +75,46 @@ fn run_one(map: Map) -> u32 {
             .and_modify(|positions| positions.push(antenna.position))
             .or_insert(vec![antenna.position]);
     }
-    println!("{:?}", antennas_positions_by_frequency);
-    42
+
+    let mut antinodes: HashSet<Position> = HashSet::new();
+
+    for (frequency, antennas_positions) in &antennas_positions_by_frequency {
+        for (a, b) in antennas_positions.iter().tuple_combinations::<(_, _)>() {
+            let dx = (b.x - a.x).abs();
+            let dy = (b.y - a.y).abs();
+
+            let antinode_a_x = if a.x < b.x { a.x - dx } else { a.x + dx };
+            let antinode_a_y = if a.y < b.y { a.y - dy } else { a.y + dy };
+
+            let antinode_b_x = if a.x < b.x { b.x + dx } else { b.x - dx };
+            let antinode_b_y = if a.y < b.y { b.y + dy } else { b.y - dy };
+
+            let antinode_a = Position {
+                x: antinode_a_x,
+                y: antinode_a_y,
+            };
+            if is_in_bounds(&antinode_a, map.dimension) {
+                antinodes.insert(antinode_a.clone());
+            }
+            let antinode_b = Position {
+                x: antinode_b_x,
+                y: antinode_b_y,
+            };
+            if is_in_bounds(&antinode_b, map.dimension) {
+                antinodes.insert(antinode_b.clone());
+            }
+        }
+    }
+
+    antinodes.len() as u32
 }
 
+fn is_in_bounds(antinode: &Position, dimension: u8) -> bool {
+    antinode.x >= 0
+        && antinode.x < dimension as i8
+        && antinode.y >= 0
+        && antinode.y < dimension as i8
+}
 pub fn part_one(input: &str) -> Option<u32> {
     parse(input).map(run_one)
 }

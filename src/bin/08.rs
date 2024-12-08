@@ -96,7 +96,41 @@ fn run(map: Map, part: Part) -> u32 {
                         antinodes.insert(antinode_b.clone());
                     }
                 }
-                Part::Two => {}
+                Part::Two => {
+                    let dx = (b.x - a.x);
+                    let dy = (b.y - a.y);
+                    let mut coeff = 0;
+
+                    loop {
+                        let antinode = Position {
+                            x: a.x - coeff * dx,
+                            y: a.y - coeff * dy,
+                        };
+
+                        if is_in_bounds(&antinode, map.dimension) {
+                            antinodes.insert(antinode.clone());
+                            coeff += 1;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    coeff = 1;
+
+                    loop {
+                        let antinode = Position {
+                            x: a.x + coeff * dx,
+                            y: a.y + coeff * dy,
+                        };
+
+                        if is_in_bounds(&antinode, map.dimension) {
+                            antinodes.insert(antinode.clone());
+                            coeff += 1;
+                        } else {
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -115,7 +149,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    parse(input).map(|map| run(map, Part::Two))
 }
 
 #[cfg(test)]

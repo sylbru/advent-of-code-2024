@@ -1,35 +1,63 @@
 #![allow(unused)]
 advent_of_code::solution!(8);
 
-// parse into list of antennas positions, + dimensions
-// (create bool matrix of those dimensions)
-// all pairs of antennas of the same frequency
-// for each pair, create two antinodes
-// ignore out of bounds antinodes
-// count unique antinodes (or count true values in bool matrix)
+/*
+x parse into list of antennas positions, + dimensions
+    - (create bool matrix of those dimensions)
+- all pairs of antennas of the same frequency
+- antinodes : Vec<Position> or HashSet<Position>
+- for each pair, create two antinodes
+- ignore out of bounds antinodes
+- count unique antinodes (or just set length)(or count true values in bool matrix)
+*/
 
+#[derive(Debug)]
 struct Position {
     x: i8,
     y: i8,
 }
 
+#[derive(Debug)]
 struct Map {
     dimension: u8,
-    antennas: Vec<Position>,
+    antennas: Vec<Antenna>,
 }
 
-// type Antinode = Position
+type Frequency = char;
+
+#[derive(Debug)]
+struct Antenna {
+    frequency: Frequency,
+    position: Position,
+}
 
 fn parse(input: &str) -> Option<Map> {
     let matrix: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
+    let dimension = matrix.len() as u8;
+    let mut antennas = Vec::new();
+
+    for y in 0..dimension {
+        for x in 0..dimension {
+            if matrix[y as usize][x as usize] != '.' {
+                antennas.push(Antenna {
+                    frequency: matrix[y as usize][x as usize],
+                    position: Position {
+                        x: x as i8,
+                        y: y as i8,
+                    },
+                });
+            }
+        }
+    }
 
     Some(Map {
-        dimension: matrix.len() as u8,
-        antennas: vec![],
+        dimension,
+        antennas,
     })
 }
 
 fn run_one(map: Map) -> u32 {
+    println!("{:?}", map);
     42
 }
 

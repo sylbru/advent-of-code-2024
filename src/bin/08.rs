@@ -100,22 +100,7 @@ fn run(map: Map, part: Part) -> u32 {
                     let dx = (b.x - a.x);
                     let dy = (b.y - a.y);
                     let mut coeff = 0;
-
-                    loop {
-                        let antinode = Position {
-                            x: a.x - coeff * dx,
-                            y: a.y - coeff * dy,
-                        };
-
-                        if is_in_bounds(&antinode, map.dimension) {
-                            antinodes.insert(antinode.clone());
-                            coeff += 1;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    coeff = 1;
+                    let mut direction_positive = false;
 
                     loop {
                         let antinode = Position {
@@ -125,9 +110,14 @@ fn run(map: Map, part: Part) -> u32 {
 
                         if is_in_bounds(&antinode, map.dimension) {
                             antinodes.insert(antinode.clone());
-                            coeff += 1;
+                            coeff += if direction_positive { 1 } else { -1 };
                         } else {
-                            break;
+                            if !direction_positive {
+                                direction_positive = true;
+                                coeff = 1;
+                            } else {
+                                break;
+                            }
                         }
                     }
                 }
@@ -165,6 +155,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(34));
     }
 }

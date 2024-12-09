@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 advent_of_code::solution!(9);
 
 fn parse(input: &str) -> Option<u32> {
@@ -36,18 +38,27 @@ pub fn part_one(input: &str) -> Option<u32> {
         };
     }
 
+    println!("{:?}", blocks);
+
+    let mut i_free = 0;
+    let mut i_to_move = blocks.len() - 1;
+
+    while i_free < i_to_move {
+        while blocks[i_free].is_some() {
+            i_free += 1;
+        }
+
+        while blocks[i_to_move].is_none() {
+            i_to_move -= 1;
+        }
+
+        blocks.swap(i_free, i_to_move);
+    }
+
+    println!("{:?}", blocks);
+
     None
-
-    // track i_free index next free block
-    // track i_to_move index next block to move
-    // while i_free < i_to_move
 }
-
-// fn parse(input: &str) ->
-
-// fn run_one() -> u32 {
-//     42
-// }
 
 pub fn part_two(input: &str) -> Option<u32> {
     None

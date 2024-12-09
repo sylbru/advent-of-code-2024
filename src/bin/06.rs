@@ -26,17 +26,18 @@ impl From<char> for Slot {
     }
 }
 
-// impl PartialEq for Slot {
-//     fn eq(&self, other: &Self) -> bool {
-//         match (self, other) k
-//     }
-// }
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Direction {
     Up,
     Right,
     Down,
     Left,
+}
+
+#[derive(Debug, PartialEq)]
+enum RouteResult {
+    Finished(isize), // Finished with a number of visited slots
+    Loops,           // Ends up in a loop
 }
 
 fn parse(input: &str) -> Option<(Vec<Vec<Slot>>, Guard)> {
@@ -92,11 +93,6 @@ fn run_two((grid, guard): (Vec<Vec<Slot>>, Guard)) -> isize {
     efficient_obstructions
 }
 
-#[derive(Debug, PartialEq)]
-enum RouteResult {
-    Finished(isize), // Finished with a number of visited slots
-    Loops,           // Ends up in a loop
-}
 fn run_loop((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> RouteResult {
     let mut visited_slots = 0;
 

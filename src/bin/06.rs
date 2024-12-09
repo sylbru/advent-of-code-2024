@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 advent_of_code::solution!(6);
 
 #[derive(Debug, Clone)]
@@ -29,7 +31,7 @@ impl From<char> for Slot {
 //         match (self, other) k
 //     }
 // }
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Direction {
     Up,
     Right,
@@ -100,14 +102,14 @@ fn run_loop((mut grid, mut guard): (Vec<Vec<Slot>>, Guard)) -> RouteResult {
 
     let mut desired_position;
     let dimension: isize = grid.len() as isize;
-    let mut history: Vec<((isize, isize), Direction)> = Vec::new();
+    let mut history: HashSet<((isize, isize), Direction)> = HashSet::new();
 
     loop {
         if history.contains(&(guard.position, guard.direction)) {
             return RouteResult::Loops;
         }
 
-        history.push((guard.position, guard.direction));
+        history.insert((guard.position, guard.direction));
 
         // Mark current position as visited straight away if it’s not already
         if grid[guard.position.1 as usize][guard.position.0 as usize] == Slot::Free {

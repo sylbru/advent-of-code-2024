@@ -42,7 +42,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     )
 }
 
-fn get_tile(map: &Vec<Vec<u8>>, position: Position) -> u8 {
+fn get_elevation(map: &Vec<Vec<u8>>, position: Position) -> u8 {
     map[position.y][position.x]
 }
 
@@ -84,7 +84,7 @@ fn step(
         explore_direction(
             position_right,
             map,
-            position,
+            get_elevation(map, *position),
             &mut new_ongoing_trails,
             reachable_summits,
         );
@@ -98,7 +98,7 @@ fn step(
         explore_direction(
             position_down,
             map,
-            position,
+            get_elevation(map, *position),
             &mut new_ongoing_trails,
             reachable_summits,
         );
@@ -113,22 +113,21 @@ fn step(
 }
 
 fn explore_direction(
-    position_right: Position,
+    next_position: Position,
     map: &Vec<Vec<u8>>,
-    position: &Position,
+    from_elevation: u8,
     new_ongoing_trails: &mut Vec<Position>,
     reachable_summits: &mut HashSet<Position>,
 ) {
-    if in_bounds(position_right, map) {
-        let tile_right = get_tile(map, position_right);
+    if in_bounds(next_position, map) {
+        let elevation = get_elevation(map, next_position);
 
-        if get_tile(map, *position) + 1 == tile_right {
-            // changes.push((index, position_right));
-            new_ongoing_trails.push(position_right);
+        if from_elevation + 1 == elevation {
+            new_ongoing_trails.push(next_position);
         }
 
-        if tile_right == 9 {
-            (*reachable_summits).insert(position_right);
+        if elevation == 9 {
+            (*reachable_summits).insert(next_position);
         }
     }
 }

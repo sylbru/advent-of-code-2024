@@ -94,7 +94,24 @@ fn step(
             }
         }
 
-        // if left is available, add a position to that tile
+        // if down is available, add a position to that tile
+        let position_down = Position {
+            x: position.x,
+            y: position.y + 1,
+        };
+
+        if in_bounds(position_down, map) {
+            let tile_down = get_tile(map, position_down);
+
+            if get_tile(map, *position) + 1 == tile_down {
+                new_ongoing_trails.push(position_down);
+            }
+
+            if tile_down == 9 {
+                (*reachable_summits).insert(position_down);
+            }
+        }
+
         // if bottom is available, add a position to that tile
         // if up is available, add a position to that tile
 
@@ -122,7 +139,7 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, Some(1));
+        assert_eq!(result, Some(2));
     }
 
     #[test]

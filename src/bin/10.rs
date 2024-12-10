@@ -1,5 +1,11 @@
 advent_of_code::solution!(10);
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct Position {
+    x: usize,
+    y: usize,
+}
+
 pub fn part_one(input: &str) -> Option<u32> {
     let map: Vec<Vec<u8>> = input
         .lines()
@@ -10,6 +16,18 @@ pub fn part_one(input: &str) -> Option<u32> {
         })
         .collect();
     println!("{:?}", map);
+
+    let mut trailheads = vec![];
+    for (y, line) in map.iter().enumerate() {
+        for (x, tile) in (*line).iter().enumerate() {
+            if *tile == 0 {
+                trailheads.push(Position { x, y });
+            }
+        }
+    }
+
+    println!("{:?}", trailheads);
+
     None
 }
 

@@ -81,18 +81,13 @@ fn step(
             y: position.y,
         };
 
-        if in_bounds(position_right, map) {
-            let tile_right = get_tile(map, position_right);
-
-            if get_tile(map, *position) + 1 == tile_right {
-                // changes.push((index, position_right));
-                new_ongoing_trails.push(position_right);
-            }
-
-            if tile_right == 9 {
-                (*reachable_summits).insert(position_right);
-            }
-        }
+        explore_direction(
+            position_right,
+            map,
+            position,
+            &mut new_ongoing_trails,
+            reachable_summits,
+        );
 
         // if down is available, add a position to that tile
         let position_down = Position {
@@ -100,17 +95,13 @@ fn step(
             y: position.y + 1,
         };
 
-        if in_bounds(position_down, map) {
-            let tile_down = get_tile(map, position_down);
-
-            if get_tile(map, *position) + 1 == tile_down {
-                new_ongoing_trails.push(position_down);
-            }
-
-            if tile_down == 9 {
-                (*reachable_summits).insert(position_down);
-            }
-        }
+        explore_direction(
+            position_down,
+            map,
+            position,
+            &mut new_ongoing_trails,
+            reachable_summits,
+        );
 
         // if bottom is available, add a position to that tile
         // if up is available, add a position to that tile
@@ -119,6 +110,27 @@ fn step(
     }
 
     *ongoing_trails = new_ongoing_trails;
+}
+
+fn explore_direction(
+    position_right: Position,
+    map: &Vec<Vec<u8>>,
+    position: &Position,
+    new_ongoing_trails: &mut Vec<Position>,
+    reachable_summits: &mut HashSet<Position>,
+) {
+    if in_bounds(position_right, map) {
+        let tile_right = get_tile(map, position_right);
+
+        if get_tile(map, *position) + 1 == tile_right {
+            // changes.push((index, position_right));
+            new_ongoing_trails.push(position_right);
+        }
+
+        if tile_right == 9 {
+            (*reachable_summits).insert(position_right);
+        }
+    }
 }
 
 fn in_bounds(position: Position, map: &Vec<Vec<u8>>) -> bool {

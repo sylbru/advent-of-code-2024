@@ -6,8 +6,8 @@ advent_of_code::solution!(10);
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash, Eq)]
 struct Position {
-    x: usize,
-    y: usize,
+    x: isize,
+    y: isize,
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -25,7 +25,10 @@ pub fn part_one(input: &str) -> Option<u32> {
     for (y, line) in map.iter().enumerate() {
         for (x, tile) in (*line).iter().enumerate() {
             if *tile == 0 {
-                trailheads.push(Position { x, y });
+                trailheads.push(Position {
+                    x: x.try_into().unwrap(),
+                    y: y.try_into().unwrap(),
+                });
             }
         }
     }
@@ -43,7 +46,8 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 fn get_elevation(map: &Vec<Vec<u8>>, position: Position) -> u8 {
-    map[position.y][position.x]
+    // position is supposed to be in bounds
+    map[position.y as usize][position.x as usize]
 }
 
 fn find_reachable_summits(trailhead: Position, map: &Vec<Vec<u8>>) -> HashSet<Position> {
@@ -91,6 +95,22 @@ fn step(
             reachable_summits,
         );
 
+        explore_direction(
+            to_left(*position),
+            map,
+            get_elevation(map, *position),
+            &mut new_ongoing_trails,
+            reachable_summits,
+        );
+
+        explore_direction(
+            to_up(*position),
+            map,
+            get_elevation(map, *position),
+            &mut new_ongoing_trails,
+            reachable_summits,
+        );
+
         // if bottom is available, add a position to that tile
         // if up is available, add a position to that tile
 
@@ -114,6 +134,19 @@ fn to_down(position: Position) -> Position {
     }
 }
 
+fn to_left(position: Position) -> Position {
+    Position {
+        x: position.x - 1,
+        y: position.y,
+    }
+}
+
+fn to_up(position: Position) -> Position {
+    Position {
+        x: position.x,
+        y: position.y - 1,
+    }
+}
 fn explore_direction(
     next_position: Position,
     map: &Vec<Vec<u8>>,
@@ -135,8 +168,8 @@ fn explore_direction(
 }
 
 fn in_bounds(position: Position, map: &Vec<Vec<u8>>) -> bool {
-    let height = map.len();
-    let width = map[0].len();
+    let height = map.len() as isize;
+    let width = map[0].len() as isize;
 
     position.x >= 0 && position.x < width && position.y >= 0 && position.y < height
 }

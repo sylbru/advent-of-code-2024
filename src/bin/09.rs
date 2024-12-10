@@ -13,9 +13,9 @@ enum BlockType {
 
 pub fn part_one(input: &str) -> Option<u32> {
     // convert disk map into blocks
-    let mut blocks: Vec<Option<u8>> = Vec::new();
+    let mut blocks: Vec<Option<usize>> = Vec::new();
     let mut next_block_type = BlockType::File;
-    let mut file_id = 0u8;
+    let mut file_id = 0usize;
 
     for c in input.chars() {
         let length = c.to_string().parse::<u8>().ok()?;
@@ -38,7 +38,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         };
     }
 
-    println!("{:?}", blocks);
+    // println!("{:?}", blocks);
 
     let mut i_free = 0;
     let mut i_to_move = blocks.len() - 1;
@@ -52,12 +52,26 @@ pub fn part_one(input: &str) -> Option<u32> {
             i_to_move -= 1;
         }
 
-        blocks.swap(i_free, i_to_move);
+        if i_free < i_to_move {
+            blocks.swap(i_free, i_to_move);
+        }
     }
 
-    println!("{:?}", blocks);
+    // println!("{:?}", blocks);
+    Some(checksum(blocks))
+}
 
-    None
+fn checksum(blocks: Vec<Option<usize>>) -> u32 {
+    let mut result = 0usize;
+
+    for (i, block) in blocks.iter().enumerate() {
+        if let Some(file_id) = block {
+            // println!("{} {:?}", i, file_id);
+            result += i * (*file_id);
+        }
+    }
+
+    result as u32
 }
 
 pub fn part_two(input: &str) -> Option<u32> {

@@ -68,10 +68,12 @@ fn step(
     let mut new_ongoing_trails: Vec<Position> = Vec::new();
 
     for (index, position) in ongoing_trails.iter().enumerate() {
+        let current_elevation = get_elevation(map, *position);
+
         explore_direction(
             to_right(*position),
             map,
-            get_elevation(map, *position),
+            current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
         );
@@ -79,7 +81,7 @@ fn step(
         explore_direction(
             to_down(*position),
             map,
-            get_elevation(map, *position),
+            current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
         );
@@ -87,7 +89,7 @@ fn step(
         explore_direction(
             to_left(*position),
             map,
-            get_elevation(map, *position),
+            current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
         );
@@ -95,7 +97,7 @@ fn step(
         explore_direction(
             to_up(*position),
             map,
-            get_elevation(map, *position),
+            current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
         );
@@ -131,6 +133,7 @@ fn to_up(position: Position) -> Position {
         y: position.y - 1,
     }
 }
+
 fn explore_direction(
     next_position: Position,
     map: &Vec<Vec<u8>>,

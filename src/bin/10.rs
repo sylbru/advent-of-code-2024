@@ -10,7 +10,7 @@ struct Position {
     y: isize,
 }
 
-pub fn part_one(input: &str) -> Option<u32> {
+pub fn part_two(input: &str) -> Option<u32> {
     let map: Vec<Vec<u8>> = input
         .lines()
         .map(|line| {
@@ -35,7 +35,8 @@ pub fn part_one(input: &str) -> Option<u32> {
     Some(
         trailheads
             .iter()
-            .map(|trailhead| find_reachable_summits(*trailhead, &map).len())
+            .map(|trailhead| find_reachable_summits(*trailhead, &map))
+            // .map(|trailhead| find_reachable_summits(*trailhead, &map).len())
             .sum::<usize>()
             .try_into()
             .unwrap(),
@@ -47,22 +48,30 @@ fn get_elevation(map: &Vec<Vec<u8>>, position: Position) -> u8 {
     map[position.y as usize][position.x as usize]
 }
 
-fn find_reachable_summits(trailhead: Position, map: &Vec<Vec<u8>>) -> HashSet<Position> {
+fn find_reachable_summits(trailhead: Position, map: &Vec<Vec<u8>>) -> usize {
     let mut reachable_summits: HashSet<Position> = HashSet::new();
     let mut ongoing_trails: Vec<Position> = Vec::new();
+    let mut trails_count = 0;
     ongoing_trails.push(trailhead);
 
     while !ongoing_trails.is_empty() {
-        step(&mut ongoing_trails, &map, &mut reachable_summits);
+        step(
+            &mut ongoing_trails,
+            &map,
+            &mut reachable_summits,
+            &mut trails_count,
+        );
     }
 
-    reachable_summits
+    // reachable_summits
+    trails_count
 }
 
 fn step(
     ongoing_trails: &mut Vec<Position>,
     map: &Vec<Vec<u8>>,
     reachable_summits: &mut HashSet<Position>,
+    trails_count: &mut usize,
 ) {
     let mut changes: Vec<(usize, Position)> = Vec::new();
     let mut new_ongoing_trails: Vec<Position> = Vec::new();
@@ -76,6 +85,7 @@ fn step(
             current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
+            trails_count,
         );
 
         explore_direction(
@@ -84,6 +94,7 @@ fn step(
             current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
+            trails_count,
         );
 
         explore_direction(
@@ -92,6 +103,7 @@ fn step(
             current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
+            trails_count,
         );
 
         explore_direction(
@@ -100,6 +112,7 @@ fn step(
             current_elevation,
             &mut new_ongoing_trails,
             reachable_summits,
+            trails_count,
         );
     }
 
@@ -140,13 +153,15 @@ fn explore_direction(
     from_elevation: u8,
     new_ongoing_trails: &mut Vec<Position>,
     reachable_summits: &mut HashSet<Position>,
+    trails_count: &mut usize,
 ) {
     if in_bounds(next_position, map) {
         let elevation = get_elevation(map, next_position);
 
         if from_elevation + 1 == elevation {
             if elevation == 9 {
-                (*reachable_summits).insert(next_position);
+                (*trails_count) += 1;
+                // (*reachable_summits).insert(next_position);
             } else {
                 new_ongoing_trails.push(next_position);
             }
@@ -161,7 +176,7 @@ fn in_bounds(position: Position, map: &Vec<Vec<u8>>) -> bool {
     position.x >= 0 && position.x < width && position.y >= 0 && position.y < height
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
+pub fn part_one(input: &str) -> Option<u32> {
     None
 }
 
@@ -171,7 +186,8 @@ mod tests {
 
     #[test]
     fn test_part_one() {
-        let result = part_one(&advent_of_code::template::read_file("examples", DAY));
+        let result = None;
+        // let result = part_one(&advent_of_code::template::read_file("examples", DAY));
         assert_eq!(result, Some(36));
     }
 

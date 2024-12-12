@@ -19,7 +19,6 @@ pub fn part_one(input: &str) -> Option<u32> {
                 .collect()
         })
         .collect();
-    println!("{:?}", map);
 
     let mut trailheads = vec![];
     for (y, line) in map.iter().enumerate() {
@@ -32,8 +31,6 @@ pub fn part_one(input: &str) -> Option<u32> {
             }
         }
     }
-
-    println!("{:?}", trailheads);
 
     Some(
         trailheads
@@ -60,14 +57,6 @@ fn find_reachable_summits(trailhead: Position, map: &Vec<Vec<u8>>) -> HashSet<Po
     }
 
     reachable_summits
-
-    // start at position
-    // in all directions, find reachable tiles
-    // discard
-    // maintain list of ongoing trails, start with four (start+up/down/left/right)
-    // if a trail has no more reachable adjacent tiles, discard it
-    // maintain list of reached summits
-    // once a trail reaches a summit, add to reached summits
 }
 
 fn step(
@@ -110,11 +99,6 @@ fn step(
             &mut new_ongoing_trails,
             reachable_summits,
         );
-
-        // if bottom is available, add a position to that tile
-        // if up is available, add a position to that tile
-
-        // remove the starting tile
     }
 
     *ongoing_trails = new_ongoing_trails;
@@ -158,11 +142,11 @@ fn explore_direction(
         let elevation = get_elevation(map, next_position);
 
         if from_elevation + 1 == elevation {
-            new_ongoing_trails.push(next_position);
-        }
-
-        if elevation == 9 {
-            (*reachable_summits).insert(next_position);
+            if elevation == 9 {
+                (*reachable_summits).insert(next_position);
+            } else {
+                new_ongoing_trails.push(next_position);
+            }
         }
     }
 }
@@ -185,7 +169,7 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, Some(2));
+        assert_eq!(result, Some(36));
     }
 
     #[test]

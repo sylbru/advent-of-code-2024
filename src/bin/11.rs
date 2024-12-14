@@ -10,9 +10,7 @@ fn parse(input: &str) -> Option<Vec<usize>> {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let stones = parse(input).unwrap();
-
-    Some(blink(stones, 25))
+    parse(input).map(|stones| blink(stones, 25))
 }
 
 fn transform_stone(stone: usize) -> Vec<usize> {
@@ -47,7 +45,7 @@ fn blink(stones: Vec<usize>, times: u8) -> u32 {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    parse(input).map(|stones| blink(stones, 25))
 }
 
 #[cfg(test)]

@@ -34,7 +34,7 @@ fn transform_stone(stone: usize) -> Vec<usize> {
 }
 
 fn blink(stones: Vec<usize>, times: u8) -> u32 {
-    if (times > 0) {
+    if times > 0 {
         let new_stones: Vec<usize> = stones
             .iter()
             .map(|&stone| transform_stone(stone))
@@ -42,7 +42,6 @@ fn blink(stones: Vec<usize>, times: u8) -> u32 {
             .concat();
         blink(new_stones, times - 1)
     } else {
-        println!("{:?}", stones);
         stones.len() as u32
     }
 }

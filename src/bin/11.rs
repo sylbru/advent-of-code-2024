@@ -45,11 +45,11 @@ fn blink(stones: Vec<usize>, times: u8, memo: &mut HashMap<(String, u8), u32>) -
                 .map(|&stone| transform_stone(stone))
                 .collect::<Vec<Vec<usize>>>()
                 .concat();
-            blink(new_stones, times - 1, memo)
+            let result = blink(new_stones, times - 1, memo);
+            memo.insert((stones_str.to_owned(), times), result);
+            return result;
         } else {
-            let len = stones.len() as u32;
-            memo.insert((stones_str.to_owned(), times), len);
-            return len;
+            stones.len() as u32
         }
     }
 }

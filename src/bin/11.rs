@@ -16,6 +16,17 @@ pub fn part_one(input: &str) -> Option<u32> {
     parse(input).map(|stones| blink_stones(stones, 25))
 }
 
+pub fn part_two(input: &str) -> Option<u32> {
+    parse(input).map(|stones| blink_stones(stones, 35))
+}
+
+fn blink_stones(stones: Vec<usize>, times: u8) -> u32 {
+    stones
+        .iter()
+        .map(|&stone| stones_count_after_blinks(stone, times))
+        .sum()
+}
+
 fn stones_count_after_blinks(stone: usize, times: u8) -> u32 {
     let mut stones = vec![stone];
 
@@ -28,13 +39,6 @@ fn stones_count_after_blinks(stone: usize, times: u8) -> u32 {
     }
 
     stones.len() as u32
-}
-
-fn blink_stones(stones: Vec<usize>, times: u8) -> u32 {
-    stones
-        .iter()
-        .map(|&stone| stones_count_after_blinks(stone, times))
-        .sum()
 }
 
 fn transform_stone(stone: usize) -> Vec<usize> {
@@ -53,23 +57,6 @@ fn transform_stone(stone: usize) -> Vec<usize> {
             }
         }
     }
-}
-
-fn blink(stones: Vec<usize>, times: u8) -> Vec<usize> {
-    if times > 0 {
-        let new_stones: Vec<usize> = stones
-            .iter()
-            .map(|&stone| transform_stone(stone))
-            .collect::<Vec<Vec<usize>>>()
-            .concat();
-        blink(new_stones, times - 1)
-    } else {
-        stones
-    }
-}
-
-pub fn part_two(input: &str) -> Option<u32> {
-    parse(input).map(|stones| blink_stones(stones, 35))
 }
 
 #[cfg(test)]

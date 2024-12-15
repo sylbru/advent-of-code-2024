@@ -12,8 +12,8 @@ fn parse(input: &str) -> Option<Vec<usize>> {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let memo: HashMap<(String, u8), u32> = HashMap::new();
-    parse(input).map(|stones| blink(stones, 25, memo))
+    let mut memo: HashMap<(String, u8), u32> = HashMap::new();
+    parse(input).map(|stones| blink(stones, 25, &mut memo))
 }
 
 fn transform_stone(stone: usize) -> Vec<usize> {
@@ -34,8 +34,9 @@ fn transform_stone(stone: usize) -> Vec<usize> {
     }
 }
 
-fn blink(stones: Vec<usize>, times: u8, memo: HashMap<(String, u8), u32>) -> u32 {
-    if let Some(result) = memo.get(&(format!("{:?}", stones), times)) {
+fn blink(stones: Vec<usize>, times: u8, memo: &mut HashMap<(String, u8), u32>) -> u32 {
+    let stones_str: &str = &format!("{:?}", stones);
+    if let Some(result) = memo.get(&(stones_str.to_owned(), times)) {
         *result
     } else {
         if times > 0 {
@@ -46,14 +47,16 @@ fn blink(stones: Vec<usize>, times: u8, memo: HashMap<(String, u8), u32>) -> u32
                 .concat();
             blink(new_stones, times - 1, memo)
         } else {
-            stones.len() as u32
+            let len = stones.len() as u32;
+            memo.insert((stones_str.to_owned(), times), len);
+            return len;
         }
     }
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let memo: HashMap<(String, u8), u32> = HashMap::new();
-    parse(input).map(|stones| blink(stones, 25, memo))
+    let mut memo: HashMap<(String, u8), u32> = HashMap::new();
+    parse(input).map(|stones| blink(stones, 25, &mut memo))
 }
 
 #[cfg(test)]

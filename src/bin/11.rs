@@ -12,8 +12,29 @@ fn parse(input: &str) -> Option<Vec<usize>> {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut memo: HashMap<(Vec<usize>, u8), u32> = HashMap::new();
-    parse(input).map(|stones| blink(stones, 25, &mut memo))
+    // let mut memo: HashMap<(Vec<usize>, u8), u32> = HashMap::new();
+    parse(input).map(|stones| blink_stones(stones, 25))
+}
+
+fn stones_count_after_blinks(stone: usize, times: u8) -> u32 {
+    let mut stones = vec![stone];
+
+    for _ in 0..times {
+        stones = stones
+            .iter()
+            .map(|&stone| transform_stone(stone))
+            .collect::<Vec<Vec<usize>>>()
+            .concat();
+    }
+
+    stones.len() as u32
+}
+
+fn blink_stones(stones: Vec<usize>, times: u8) -> u32 {
+    stones
+        .iter()
+        .map(|&stone| stones_count_after_blinks(stone, times))
+        .sum()
 }
 
 fn transform_stone(stone: usize) -> Vec<usize> {
@@ -34,29 +55,21 @@ fn transform_stone(stone: usize) -> Vec<usize> {
     }
 }
 
-fn blink(stones: Vec<usize>, times: u8, memo: &mut HashMap<(Vec<usize>, u8), u32>) -> u32 {
-    if let Some(result) = memo.get(&(stones.clone(), times)) {
-        println!("used memo! {}", *result);
-        *result
+fn blink(stones: Vec<usize>, times: u8) -> Vec<usize> {
+    if times > 0 {
+        let new_stones: Vec<usize> = stones
+            .iter()
+            .map(|&stone| transform_stone(stone))
+            .collect::<Vec<Vec<usize>>>()
+            .concat();
+        blink(new_stones, times - 1)
     } else {
-        if times > 0 {
-            let new_stones: Vec<usize> = stones
-                .iter()
-                .map(|&stone| transform_stone(stone))
-                .collect::<Vec<Vec<usize>>>()
-                .concat();
-            let result = blink(new_stones, times - 1, memo);
-            memo.insert((stones.clone(), times), result);
-            return result;
-        } else {
-            stones.len() as u32
-        }
+        stones
     }
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut memo: HashMap<(Vec<usize>, u8), u32> = HashMap::new();
-    parse(input).map(|stones| blink(stones, 35, &mut memo))
+    parse(input).map(|stones| blink_stones(stones, 35))
 }
 
 #[cfg(test)]

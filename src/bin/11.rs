@@ -12,7 +12,7 @@ fn parse(input: &str) -> Option<Vec<usize>> {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut memo: HashMap<(String, u8), u32> = HashMap::new();
+    let mut memo: HashMap<(Vec<usize>, u8), u32> = HashMap::new();
     parse(input).map(|stones| blink(stones, 25, &mut memo))
 }
 
@@ -34,9 +34,9 @@ fn transform_stone(stone: usize) -> Vec<usize> {
     }
 }
 
-fn blink(stones: Vec<usize>, times: u8, memo: &mut HashMap<(String, u8), u32>) -> u32 {
-    let stones_str: &str = &format!("{:?}", stones);
-    if let Some(result) = memo.get(&(stones_str.to_owned(), times)) {
+fn blink(stones: Vec<usize>, times: u8, memo: &mut HashMap<(Vec<usize>, u8), u32>) -> u32 {
+    if let Some(result) = memo.get(&(stones.clone(), times)) {
+        println!("used memo! {}", *result);
         *result
     } else {
         if times > 0 {
@@ -46,7 +46,7 @@ fn blink(stones: Vec<usize>, times: u8, memo: &mut HashMap<(String, u8), u32>) -
                 .collect::<Vec<Vec<usize>>>()
                 .concat();
             let result = blink(new_stones, times - 1, memo);
-            memo.insert((stones_str.to_owned(), times), result);
+            memo.insert((stones.clone(), times), result);
             return result;
         } else {
             stones.len() as u32
@@ -55,8 +55,8 @@ fn blink(stones: Vec<usize>, times: u8, memo: &mut HashMap<(String, u8), u32>) -
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut memo: HashMap<(String, u8), u32> = HashMap::new();
-    parse(input).map(|stones| blink(stones, 25, &mut memo))
+    let mut memo: HashMap<(Vec<usize>, u8), u32> = HashMap::new();
+    parse(input).map(|stones| blink(stones, 35, &mut memo))
 }
 
 #[cfg(test)]

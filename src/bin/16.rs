@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use std::collections::{HashMap, LinkedList};
 
 advent_of_code::solution!(16);
@@ -25,15 +27,47 @@ keeping the current minimum in order to stop early if we’re already higher
 pub fn part_one(input: &str) -> Option<u32> {
     let parsed_input = parse(input).unwrap();
     let mut paths: Vec<(LinkedList<Position>, usize)> = Vec::new();
+    let mut best_path_score: usize;
 
     let mut start_path = LinkedList::new();
     start_path.push_back(parsed_input.start);
     paths.push((start_path, 0));
 
     println!("{:?}", paths);
+    loop {
+        let mut new_paths: Vec<(LinkedList<Position>, usize)> = Vec::new();
+
+        for (i, (path, score)) in paths.iter_mut().enumerate() {
+            match adjacent_positions(path.back().unwrap(), &parsed_input)[..] {
+                [] => {}
+                [only_next_position] => {
+                    path.push_back(only_next_position);
+                    new_paths.push((path.clone(), score.clone()));
+                }
+                _ => {}
+            }
+        }
+
+        paths = new_paths;
+        println!("{:?}", paths);
+        // for each ongoing path
+        // get current position
+        // get valid adjacent positions
+        // if there is only one
+        //   update position and score
+        // if there is more than one
+        //   copy path as necessary and update accordingly position and score
+        // if there are none
+        //   remove path
+        break;
+        // TODO exit condition
+    }
     None
 }
 
+fn adjacent_positions(path: &Position, parsed_input: &Input) -> Vec<Position> {
+    vec![Position { x: 2, y: 2 }]
+}
 pub fn part_two(input: &str) -> Option<u32> {
     None
 }

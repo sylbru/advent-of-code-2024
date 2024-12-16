@@ -1,9 +1,36 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, LinkedList};
 
 advent_of_code::solution!(16);
 
+/*
+
+parse empty positions into hashmap, and start and end positions
+start direction : East
+maintain list of potential paths : path with cost
+    start with empty
+at every step
+    check tile in current direction
+        if empty, add it to new potential paths with cost + 1
+
+
+list of valid positions
+find all lists of positions where each position differs to the next one by 1 in x or y
+    build hashmaps for x and for y positions if necessary
+then calculate costs for each one
+keeping the current minimum in order to stop early if we’re already higher
+
+
+*/
+
 pub fn part_one(input: &str) -> Option<u32> {
-    parse(input);
+    let parsed_input = parse(input).unwrap();
+    let mut paths: Vec<(LinkedList<Position>, usize)> = Vec::new();
+
+    let mut start_path = LinkedList::new();
+    start_path.push_back(parsed_input.start);
+    paths.push((start_path, 0));
+
+    println!("{:?}", paths);
     None
 }
 
@@ -70,25 +97,6 @@ fn parse(input: &str) -> Option<Input> {
         valid_positions_for_y,
     })
 }
-/*
-
-parse empty positions into hashmap, and start and end positions
-start direction : East
-maintain list of potential paths : path with cost
-    start with empty
-at every step
-    check tile in current direction
-        if empty, add it to new potential paths with cost + 1
-
-
-list of valid positions
-find all lists of positions where each position differs to the next one by 1 in x or y
-    build hashmaps for x and for y positions if necessary
-then calculate costs for each one
-keeping the current minimum in order to stop early if we’re already higher
-
-
-*/
 #[cfg(test)]
 mod tests {
     use super::*;

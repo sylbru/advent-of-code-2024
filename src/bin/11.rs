@@ -12,7 +12,6 @@ fn parse(input: &str) -> Option<Vec<usize>> {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    // let mut memo: HashMap<(Vec<usize>, u8), u32> = HashMap::new();
     parse(input).map(|stones| blink_stones(stones, 25))
 }
 
@@ -21,21 +20,34 @@ pub fn part_two(input: &str) -> Option<u32> {
 }
 
 fn blink_stones(stones: Vec<usize>, times: u8) -> u32 {
+    let mut memo: HashMap<(usize, u8), u32> = HashMap::new();
+
     stones
         .iter()
-        .map(|&stone| stones_count_after_blinks(stone, times))
+        .map(|&stone| count_after_blinks_single_stone(stone, times, &mut memo))
         .sum()
 }
 
-fn stones_count_after_blinks(stone: usize, times: u8) -> u32 {
+fn count_after_blinks_single_stone(
+    stone: usize,
+    times: u8,
+    memo: &mut HashMap<(usize, u8), u32>,
+) -> u32 {
     let mut stones = vec![stone];
 
-    for _ in 0..times {
-        stones = stones
-            .iter()
-            .map(|&stone| transform_stone(stone))
-            .collect::<Vec<Vec<usize>>>()
-            .concat();
+    if let Some(result) = memo.get(&(stone, times)) {
+        println!("using memo! {} {} {}", stone, times, result);
+        return *result;
+    } else {
+        for i in 0..times {
+            stones = stones
+                .iter()
+                .map(|&stone| transform_stone(stone))
+                .collect::<Vec<Vec<usize>>>()
+                .concat();
+            println!("inserting memo {} {} {}", stone, i + 1, stones.len());
+            memo.insert((stone, i + 1), stones.len() as u32);
+        }
     }
 
     stones.len() as u32

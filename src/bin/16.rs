@@ -38,13 +38,15 @@ pub fn part_one(input: &str) -> Option<u32> {
         let mut new_paths: Vec<(LinkedList<Position>, usize)> = Vec::new();
 
         for (i, (path, score)) in paths.iter_mut().enumerate() {
-            match adjacent_positions(path.back().unwrap(), &parsed_input)[..] {
+            match &adjacent_positions(path.back().unwrap(), &parsed_input)[..] {
                 [] => {}
-                [only_next_position] => {
-                    path.push_back(only_next_position);
-                    new_paths.push((path.clone(), score.clone()));
+                several_next_positions => {
+                    for next_position in several_next_positions.iter() {
+                        let mut new_path = path.clone();
+                        new_path.push_back(*next_position);
+                        new_paths.push((new_path, score.clone()));
+                    }
                 }
-                _ => {}
             }
         }
 

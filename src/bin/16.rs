@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-use std::collections::{HashMap, LinkedList};
+use std::collections::{HashMap, HashSet, LinkedList};
 
 advent_of_code::solution!(16);
 
@@ -74,7 +74,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     None
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Position {
     x: u8,
     y: u8,
@@ -92,11 +92,13 @@ struct Position {
 struct Input {
     start: Position, // (Position, Direction),
     end: Position,
+    valid_positions: HashSet<Position>,
     valid_positions_for_x: HashMap<u8, Position>,
     valid_positions_for_y: HashMap<u8, Position>,
 }
 
 fn parse(input: &str) -> Option<Input> {
+    let mut valid_positions: HashSet<Position> = HashSet::new();
     let mut valid_positions_for_x: HashMap<u8, Position> = HashMap::new();
     let mut valid_positions_for_y: HashMap<u8, Position> = HashMap::new();
     let mut end: Position = Position { x: 0, y: 0 };
@@ -111,6 +113,7 @@ fn parse(input: &str) -> Option<Input> {
 
             match val {
                 '.' => {
+                    valid_positions.insert(position.clone());
                     valid_positions_for_x.insert(x as u8, position.clone());
                     valid_positions_for_y.insert(y as u8, position.clone());
                     println!("{:?}", position);
@@ -129,6 +132,7 @@ fn parse(input: &str) -> Option<Input> {
     Some(Input {
         start,
         end,
+        valid_positions,
         valid_positions_for_x,
         valid_positions_for_y,
     })

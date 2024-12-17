@@ -37,17 +37,20 @@ pub fn part_one(input: &str) -> Option<u32> {
         let mut new_paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
 
         for (path, score, direction) in paths.iter_mut() {
-            match &adjacent_positions(path.back().unwrap(), &parsed_input.valid_positions)[..] {
+            match &adjacent_positions_with_cost(path.back().unwrap(), &parsed_input.valid_positions)
+                [..]
+            {
                 [] => {}
                 several_next_positions => {
-                    for next_position in several_next_positions.iter() {
+                    for (next_position, score_to_add) in several_next_positions.iter() {
                         if path.contains(next_position) {
                             continue;
                         }
 
                         let mut new_path = path.clone();
                         new_path.push_back(*next_position);
-                        new_paths.push((new_path, score.clone(), *direction)); // compute new score
+                        new_paths.push((new_path, score.clone() + score_to_add, *direction));
+                        // compute new score
                     }
                 }
             }
@@ -63,7 +66,10 @@ pub fn part_one(input: &str) -> Option<u32> {
     None
 }
 
-fn adjacent_positions(path: &Position, valid_positions: &HashSet<Position>) -> Vec<Position> {
+fn adjacent_positions_with_cost(
+    path: &Position,
+    valid_positions: &HashSet<Position>,
+) -> Vec<(Position, usize)> {
     let to_right = valid_positions.get(&Position {
         x: path.x + 1,
         y: path.y,
@@ -82,7 +88,11 @@ fn adjacent_positions(path: &Position, valid_positions: &HashSet<Position>) -> V
     });
 
     let options = vec![to_right, to_left, to_down, to_up];
-    options.into_iter().filter_map(|o| o.copied()).collect()
+    options
+        .into_iter()
+        .filter_map(|o| o.copied())
+        .map(|pos| (pos, 42))
+        .collect()
 }
 pub fn part_two(input: &str) -> Option<u32> {
     None

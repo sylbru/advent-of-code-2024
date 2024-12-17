@@ -30,32 +30,25 @@ keeping the current minimum in order to stop early if we’re already higher
 
 pub fn part_one(input: &str) -> Option<u32> {
     let parsed_input = parse(input).unwrap();
-    let mut paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
-    let mut best_path_score: usize = MAX;
+    let mut paths: Vec<(Position, usize, Direction)> = Vec::new();
 
-    let mut start_path = LinkedList::new();
-    start_path.push_back(parsed_input.start);
-    paths.push((start_path, 0, Direction::East));
+    let dy = parsed_input.start.y.abs_diff(parsed_input.end.y) as usize;
+    let dx = parsed_input.start.x.abs_diff(parsed_input.end.x) as usize;
+    let mut best_path_score: usize = (1000 * (dy + dx) + dy + dx);
+
+    paths.push((parsed_input.start, 0, Direction::East));
 
     while !paths.is_empty() {
-        let mut new_paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
+        let mut new_paths: Vec<(Position, usize, Direction)> = Vec::new();
 
         for (path, score, direction) in paths.iter_mut() {
-            match &adjacent_positions_with_cost(
-                path.back().unwrap(),
-                &direction,
-                &parsed_input.valid_positions,
-            )[..]
+            match &adjacent_positions_with_cost(path, &direction, &parsed_input.valid_positions)[..]
             {
                 [] => {}
                 several_next_positions => {
                     for (next_position, new_direction, score_to_add) in
                         several_next_positions.iter()
                     {
-                        if path.contains(next_position) {
-                            continue;
-                        }
-
                         let new_score = score.clone() + score_to_add;
 
                         if *next_position == parsed_input.end {
@@ -64,9 +57,7 @@ pub fn part_one(input: &str) -> Option<u32> {
                             best_path_score = min(best_path_score, new_score);
                         } else if new_score < best_path_score {
                             // Update score and direction, and keep exploring the path
-                            let mut new_path = path.clone();
-                            new_path.push_back(*next_position);
-                            new_paths.push((new_path, new_score, *new_direction));
+                            new_paths.push((*next_position, new_score, *new_direction));
                         }
                     }
                 }

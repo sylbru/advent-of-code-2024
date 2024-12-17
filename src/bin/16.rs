@@ -62,7 +62,7 @@ pub fn part_one(input: &str) -> Option<u32> {
                             // We reached the end, let’s check if the score is better
                             // than what we have so far, and don’t keep exploring the path
                             best_path_score = min(best_path_score, new_score);
-                        } else {
+                        } else if new_score < best_path_score {
                             // Update score and direction, and keep exploring the path
                             let mut new_path = path.clone();
                             new_path.push_back(*next_position);

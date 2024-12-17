@@ -66,11 +66,7 @@ pub fn part_one(input: &str) -> Option<u32> {
                             // Update score and direction, and keep exploring the path
                             let mut new_path = path.clone();
                             new_path.push_back(*next_position);
-                            new_paths.push((
-                                new_path,
-                                score.clone() + score_to_add,
-                                *new_direction,
-                            ));
+                            new_paths.push((new_path, new_score, *new_direction));
                         }
                     }
                 }

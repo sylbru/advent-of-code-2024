@@ -1,6 +1,10 @@
 #![allow(unused)]
 
-use std::collections::{HashMap, HashSet, LinkedList};
+use std::{
+    cmp::min,
+    collections::{HashMap, HashSet, LinkedList},
+    usize::MAX,
+};
 
 advent_of_code::solution!(16);
 
@@ -27,13 +31,13 @@ keeping the current minimum in order to stop early if we’re already higher
 pub fn part_one(input: &str) -> Option<u32> {
     let parsed_input = parse(input).unwrap();
     let mut paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
-    let mut best_path_score: usize;
+    let mut best_path_score: usize = MAX;
 
     let mut start_path = LinkedList::new();
     start_path.push_back(parsed_input.start);
     paths.push((start_path, 0, Direction::East));
 
-    for i in 0..2 {
+    for i in 0..6 {
         let mut new_paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
 
         for (path, score, direction) in paths.iter_mut() {
@@ -52,10 +56,22 @@ pub fn part_one(input: &str) -> Option<u32> {
                             continue;
                         }
 
-                        let mut new_path = path.clone();
-                        new_path.push_back(*next_position);
-                        new_paths.push((new_path, score.clone() + score_to_add, *new_direction));
-                        // compute new score
+                        let new_score = score.clone() + score_to_add;
+
+                        if *next_position == parsed_input.end {
+                            // We reached the end, let’s check if the score is better
+                            // than what we have so far, and don’t keep exploring the path
+                            best_path_score = min(best_path_score, new_score);
+                        } else {
+                            // Update score and direction, and keep exploring the path
+                            let mut new_path = path.clone();
+                            new_path.push_back(*next_position);
+                            new_paths.push((
+                                new_path,
+                                score.clone() + score_to_add,
+                                *new_direction,
+                            ));
+                        }
                     }
                 }
             }
@@ -63,8 +79,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 
         paths = new_paths;
         println!("{:?}", paths);
-        // keep direction in order to accurately compute scores
-        // compute score
+        //
         // break;
         // TODO exit condition
     }
@@ -187,6 +202,7 @@ fn parse(input: &str) -> Option<Input> {
                     println!("{:?}", position);
                 }
                 'E' => {
+                    valid_positions.insert(position.clone());
                     end = position; // also add to valid positions ?
                 }
                 'S' => {

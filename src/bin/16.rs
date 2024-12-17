@@ -37,8 +37,11 @@ pub fn part_one(input: &str) -> Option<u32> {
         let mut new_paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
 
         for (path, score, direction) in paths.iter_mut() {
-            match &adjacent_positions_with_cost(path.back().unwrap(), &parsed_input.valid_positions)
-                [..]
+            match &adjacent_positions_with_cost(
+                path.back().unwrap(),
+                &direction,
+                &parsed_input.valid_positions,
+            )[..]
             {
                 [] => {}
                 several_next_positions => {
@@ -68,32 +71,65 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 fn adjacent_positions_with_cost(
     path: &Position,
+    direction: &Direction,
     valid_positions: &HashSet<Position>,
 ) -> Vec<(Position, usize)> {
-    let to_right = valid_positions.get(&Position {
-        x: path.x + 1,
-        y: path.y,
-    });
-    let to_left = valid_positions.get(&Position {
-        x: path.x - 1,
-        y: path.y,
-    });
-    let to_down = valid_positions.get(&Position {
-        x: path.x,
-        y: path.y + 1,
-    });
-    let to_up = valid_positions.get(&Position {
-        x: path.x,
-        y: path.y - 1,
-    });
+    let to_right = valid_positions
+        .get(&Position {
+            x: path.x + 1,
+            y: path.y,
+        })
+        .map(|pos| (pos, Direction::East));
+    let to_left = valid_positions
+        .get(&Position {
+            x: path.x - 1,
+            y: path.y,
+        })
+        .map(|pos| (pos, Direction::West));
+    let to_down = valid_positions
+        .get(&Position {
+            x: path.x,
+            y: path.y + 1,
+        })
+        .map(|pos| (pos, Direction::South));
+    let to_up = valid_positions
+        .get(&Position {
+            x: path.x,
+            y: path.y - 1,
+        })
+        .map(|pos| (pos, Direction::North));
 
     let options = vec![to_right, to_left, to_down, to_up];
     options
         .into_iter()
-        .filter_map(|o| o.copied())
-        .map(|pos| (pos, 42))
+        .filter_map(|o| o.clone())
+        .map(|(pos, new_direction)| (*pos, 1 + rotation_cost(*direction, new_direction)))
         .collect()
 }
+
+fn rotation_cost(from: Direction, to: Direction) -> usize {
+    let changes = match (from, to) {
+        (Direction::East, Direction::East) => 0,
+        (Direction::East, Direction::South) => 1,
+        (Direction::East, Direction::West) => 2,
+        (Direction::East, Direction::North) => 1,
+        (Direction::South, Direction::East) => 1,
+        (Direction::South, Direction::South) => 0,
+        (Direction::South, Direction::West) => 1,
+        (Direction::South, Direction::North) => 2,
+        (Direction::West, Direction::East) => 2,
+        (Direction::West, Direction::South) => 1,
+        (Direction::West, Direction::West) => 0,
+        (Direction::West, Direction::North) => 1,
+        (Direction::North, Direction::East) => 1,
+        (Direction::North, Direction::South) => 2,
+        (Direction::North, Direction::West) => 1,
+        (Direction::North, Direction::North) => 0,
+    };
+
+    changes * 1000
+}
+
 pub fn part_two(input: &str) -> Option<u32> {
     None
 }

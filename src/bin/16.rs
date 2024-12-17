@@ -26,17 +26,17 @@ keeping the current minimum in order to stop early if we’re already higher
 
 pub fn part_one(input: &str) -> Option<u32> {
     let parsed_input = parse(input).unwrap();
-    let mut paths: Vec<(LinkedList<Position>, usize)> = Vec::new();
+    let mut paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
     let mut best_path_score: usize;
 
     let mut start_path = LinkedList::new();
     start_path.push_back(parsed_input.start);
-    paths.push((start_path, 0));
+    paths.push((start_path, 0, Direction::East));
 
     for i in 0..2 {
-        let mut new_paths: Vec<(LinkedList<Position>, usize)> = Vec::new();
+        let mut new_paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
 
-        for (path, score) in paths.iter_mut() {
+        for (path, score, direction) in paths.iter_mut() {
             match &adjacent_positions(path.back().unwrap(), &parsed_input)[..] {
                 [] => {}
                 several_next_positions => {
@@ -47,7 +47,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 
                         let mut new_path = path.clone();
                         new_path.push_back(*next_position);
-                        new_paths.push((new_path, score.clone())); // compute new score
+                        new_paths.push((new_path, score.clone(), *direction)); // compute new score
                     }
                 }
             }
@@ -94,17 +94,17 @@ struct Position {
     y: u8,
 }
 
-// #[derive(Debug)]
-// enum Direction {
-//     East,
-//     South,
-//     West,
-//     North,
-// }
+#[derive(Debug, Clone, Copy)]
+enum Direction {
+    East,
+    South,
+    West,
+    North,
+}
 
 #[derive(Debug)]
 struct Input {
-    start: Position, // (Position, Direction),
+    start: Position,
     end: Position,
     valid_positions: HashSet<Position>,
     valid_positions_for_x: HashMap<u8, Position>,

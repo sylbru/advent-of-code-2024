@@ -37,7 +37,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     start_path.push_back(parsed_input.start);
     paths.push((start_path, 0, Direction::East));
 
-    for i in 0..6 {
+    while !paths.is_empty() {
         let mut new_paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
 
         for (path, score, direction) in paths.iter_mut() {
@@ -78,12 +78,9 @@ pub fn part_one(input: &str) -> Option<u32> {
         }
 
         paths = new_paths;
-        println!("{:?}", paths);
-        //
-        // break;
-        // TODO exit condition
     }
-    None
+
+    Some(best_path_score as u32)
 }
 
 fn adjacent_positions_with_cost(

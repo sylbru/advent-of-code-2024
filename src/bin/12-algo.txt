@@ -1,0 +1,56 @@
+AAAA
+BBCD
+BBCC
+EEEC
+
+.........
+.A.A.A.A.
+.........
+.B.B.C.D.
+.........
+.B.B.C.C.
+.........
+.E.E.E.C.
+.........
+.........
+
+Perimeter
+A : 4*4 - 2*3 = 10
+B : 4*4 - 2*4 = 8
+C : 4*4 - 2*3 = 10
+D : 4*1 - 0 = 4
+E : 4*3 - 2*2 = 8
+
+
+OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO
+
+X = 4
+O = 4*21 - 2*24 = 36
+
+struct Position { x: u8, y: u8 }
+
+region = Vec<Position>
+
+price = sum of prices of regions
+price of region = perimeter * area
+area = number of garden plots in region
+perimeter = number of sides of garden plots who do not touch another garden plot in the same region
+    4 * garden plots, minus 2 for each pair of garden plots
+    
+keep separate regions of same plant separate
+keep hashmap of position -> region ref, or array/matrix -> region ref
+plot by plot, explore in all directions until no more of the same plant are found
+
+- go through the array cell by cell
+- on every cell
+    - if the cell is already part of a region, skip it
+    - explore recursively in all directions (avoiding already explored plots for this region)
+      until the region is complete, i.e. all directions end up out of bounds or on another plant or already explored
+      - a region is a Set<Position>
+      
+      find pairs of neighbours : two positions with a.x.abs_diff(b.x) == 1 (or the same with y)
+      apply on all combinations of positions in region

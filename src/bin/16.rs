@@ -37,7 +37,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         let mut new_paths: Vec<(LinkedList<Position>, usize, Direction)> = Vec::new();
 
         for (path, score, direction) in paths.iter_mut() {
-            match &adjacent_positions(path.back().unwrap(), &parsed_input)[..] {
+            match &adjacent_positions(path.back().unwrap(), &parsed_input.valid_positions)[..] {
                 [] => {}
                 several_next_positions => {
                     for next_position in several_next_positions.iter() {
@@ -63,20 +63,20 @@ pub fn part_one(input: &str) -> Option<u32> {
     None
 }
 
-fn adjacent_positions(path: &Position, parsed_input: &Input) -> Vec<Position> {
-    let to_right = parsed_input.valid_positions.get(&Position {
+fn adjacent_positions(path: &Position, valid_positions: &HashSet<Position>) -> Vec<Position> {
+    let to_right = valid_positions.get(&Position {
         x: path.x + 1,
         y: path.y,
     });
-    let to_left = parsed_input.valid_positions.get(&Position {
+    let to_left = valid_positions.get(&Position {
         x: path.x - 1,
         y: path.y,
     });
-    let to_down = parsed_input.valid_positions.get(&Position {
+    let to_down = valid_positions.get(&Position {
         x: path.x,
         y: path.y + 1,
     });
-    let to_up = parsed_input.valid_positions.get(&Position {
+    let to_up = valid_positions.get(&Position {
         x: path.x,
         y: path.y - 1,
     });

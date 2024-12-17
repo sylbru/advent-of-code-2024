@@ -33,7 +33,6 @@ pub fn part_one(input: &str) -> Option<u32> {
     start_path.push_back(parsed_input.start);
     paths.push((start_path, 0));
 
-    println!("{:?}", paths);
     for i in 0..2 {
         let mut new_paths: Vec<(LinkedList<Position>, usize)> = Vec::new();
 
@@ -41,7 +40,6 @@ pub fn part_one(input: &str) -> Option<u32> {
             match &adjacent_positions(path.back().unwrap(), &parsed_input)[..] {
                 [] => {}
                 several_next_positions => {
-                    println!("next: {:?}", several_next_positions);
                     for next_position in several_next_positions.iter() {
                         if path.contains(next_position) {
                             continue;
@@ -49,26 +47,16 @@ pub fn part_one(input: &str) -> Option<u32> {
 
                         let mut new_path = path.clone();
                         new_path.push_back(*next_position);
-                        println!("adding {:?}", *next_position);
                         new_paths.push((new_path, score.clone())); // compute new score
-                        println!("{:?}", new_paths);
                     }
                 }
             }
         }
 
         paths = new_paths;
-        // println!("{:?}", paths);
-        // for each ongoing path
-        // get current position
-        // get valid adjacent positions
-        // if there is only one
-        //   update position and score
-        // if there is more than one
-        //   copy path as necessary and update accordingly position and score
-        // if there are none
-        //   remove path
+        println!("{:?}", paths);
         // keep direction in order to accurately compute scores
+        // compute score
         // break;
         // TODO exit condition
     }

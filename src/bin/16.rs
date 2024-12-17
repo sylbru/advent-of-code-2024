@@ -45,14 +45,16 @@ pub fn part_one(input: &str) -> Option<u32> {
             {
                 [] => {}
                 several_next_positions => {
-                    for (next_position, score_to_add) in several_next_positions.iter() {
+                    for (next_position, new_direction, score_to_add) in
+                        several_next_positions.iter()
+                    {
                         if path.contains(next_position) {
                             continue;
                         }
 
                         let mut new_path = path.clone();
                         new_path.push_back(*next_position);
-                        new_paths.push((new_path, score.clone() + score_to_add, *direction));
+                        new_paths.push((new_path, score.clone() + score_to_add, *new_direction));
                         // compute new score
                     }
                 }
@@ -73,7 +75,7 @@ fn adjacent_positions_with_cost(
     path: &Position,
     direction: &Direction,
     valid_positions: &HashSet<Position>,
-) -> Vec<(Position, usize)> {
+) -> Vec<(Position, Direction, usize)> {
     let to_right = valid_positions
         .get(&Position {
             x: path.x + 1,
@@ -103,7 +105,13 @@ fn adjacent_positions_with_cost(
     options
         .into_iter()
         .filter_map(|o| o.clone())
-        .map(|(pos, new_direction)| (*pos, 1 + rotation_cost(*direction, new_direction)))
+        .map(|(pos, new_direction)| {
+            (
+                *pos,
+                new_direction.clone(),
+                1 + rotation_cost(*direction, new_direction),
+            )
+        })
         .collect()
 }
 

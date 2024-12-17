@@ -117,22 +117,22 @@ fn adjacent_positions_with_cost(
 
 fn rotation_cost(from: Direction, to: Direction) -> usize {
     let changes = match (from, to) {
-        (Direction::East, Direction::East) => 0,
-        (Direction::East, Direction::South) => 1,
-        (Direction::East, Direction::West) => 2,
-        (Direction::East, Direction::North) => 1,
-        (Direction::South, Direction::East) => 1,
-        (Direction::South, Direction::South) => 0,
-        (Direction::South, Direction::West) => 1,
-        (Direction::South, Direction::North) => 2,
-        (Direction::West, Direction::East) => 2,
-        (Direction::West, Direction::South) => 1,
-        (Direction::West, Direction::West) => 0,
-        (Direction::West, Direction::North) => 1,
-        (Direction::North, Direction::East) => 1,
-        (Direction::North, Direction::South) => 2,
-        (Direction::North, Direction::West) => 1,
-        (Direction::North, Direction::North) => 0,
+        (Direction::East, Direction::East)
+        | (Direction::West, Direction::West)
+        | (Direction::South, Direction::South)
+        | (Direction::North, Direction::North) => 0,
+        (Direction::East, Direction::South)
+        | (Direction::South, Direction::East)
+        | (Direction::East, Direction::North)
+        | (Direction::North, Direction::East)
+        | (Direction::West, Direction::South)
+        | (Direction::South, Direction::West)
+        | (Direction::West, Direction::North)
+        | (Direction::North, Direction::West) => 1,
+        (Direction::South, Direction::North)
+        | (Direction::North, Direction::South)
+        | (Direction::West, Direction::East)
+        | (Direction::East, Direction::West) => 2,
     };
 
     changes * 1000

@@ -76,32 +76,32 @@ fn adjacent_positions_with_cost(
     direction: &Direction,
     valid_positions: &HashSet<Position>,
 ) -> Vec<(Position, Direction, usize)> {
-    let to_right = valid_positions
+    let to_east = valid_positions
         .get(&Position {
             x: path.x + 1,
             y: path.y,
         })
         .map(|pos| (pos, Direction::East));
-    let to_left = valid_positions
+    let to_west = valid_positions
         .get(&Position {
             x: path.x - 1,
             y: path.y,
         })
         .map(|pos| (pos, Direction::West));
-    let to_down = valid_positions
+    let to_south = valid_positions
         .get(&Position {
             x: path.x,
             y: path.y + 1,
         })
         .map(|pos| (pos, Direction::South));
-    let to_up = valid_positions
+    let to_north = valid_positions
         .get(&Position {
             x: path.x,
             y: path.y - 1,
         })
         .map(|pos| (pos, Direction::North));
 
-    let options = vec![to_right, to_left, to_down, to_up];
+    let options = vec![to_east, to_west, to_south, to_north];
     options
         .into_iter()
         .filter_map(|o| o.clone())

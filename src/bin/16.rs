@@ -173,14 +173,10 @@ struct Input {
     start: Position,
     end: Position,
     valid_positions: HashSet<Position>,
-    valid_positions_for_x: HashMap<u8, Position>,
-    valid_positions_for_y: HashMap<u8, Position>,
 }
 
 fn parse(input: &str) -> Option<Input> {
     let mut valid_positions: HashSet<Position> = HashSet::new();
-    let mut valid_positions_for_x: HashMap<u8, Position> = HashMap::new();
-    let mut valid_positions_for_y: HashMap<u8, Position> = HashMap::new();
     let mut end: Position = Position { x: 0, y: 0 };
     let mut start: Position = Position { x: 0, y: 0 };
 
@@ -194,9 +190,6 @@ fn parse(input: &str) -> Option<Input> {
             match val {
                 '.' => {
                     valid_positions.insert(position.clone());
-                    valid_positions_for_x.insert(x as u8, position.clone());
-                    valid_positions_for_y.insert(y as u8, position.clone());
-                    println!("{:?}", position);
                 }
                 'E' => {
                     valid_positions.insert(position.clone());
@@ -214,8 +207,6 @@ fn parse(input: &str) -> Option<Input> {
         start,
         end,
         valid_positions,
-        valid_positions_for_x,
-        valid_positions_for_y,
     })
 }
 #[cfg(test)]

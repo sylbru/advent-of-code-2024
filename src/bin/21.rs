@@ -10,14 +10,16 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 fn numpad_to_dirpad(code: &str) -> String {
     let mut current = 'A';
+    let mut y = row_for_char(current);
+    let mut x = col_for_char(current);
     let mut sequence = "".to_owned();
 
     for target in code.chars() {
         // move to char, then (A)ctivate
         while current != target {
             // move in the right direction
-            let dy: i8 = row_for_char(target) - row_for_char(current);
-            let dx: i8 = col_for_char(target) - col_for_char(current);
+            let dy: i8 = row_for_char(target) - y;
+            let dx: i8 = col_for_char(target) - x;
 
             if dx < 0 && dy < 0 {
                 // going NW, avoid hole
@@ -44,6 +46,9 @@ fn numpad_to_dirpad(code: &str) -> String {
                 }
             }
             println!("{}", sequence);
+            x = x + dx;
+            y = y + dy;
+            current = numpad()[y as usize][x as usize];
             // update current with new character
         }
 
@@ -54,21 +59,30 @@ fn numpad_to_dirpad(code: &str) -> String {
     // <A^A>^^AvvvA
 }
 
+fn numpad() -> Vec<Vec<char>> {
+    vec![
+        vec!['7', '8', '9'],
+        vec!['4', '5', '6'],
+        vec!['1', '2', '3'],
+        vec!['⌧', '0', 'A'],
+    ]
+}
+
 fn row_for_char(character: char) -> i8 {
     match character {
-        '7' | '8' | '9' => 1,
-        '4' | '5' | '6' => 2,
-        '1' | '2' | '3' => 3,
-        '0' | 'A' => 4,
+        '7' | '8' | '9' => 0,
+        '3' | '5' | '6' => 1,
+        '1' | '2' | '3' => 2,
+        '0' | 'A' => 3,
         _ => panic!("can’t find row for char {}", character),
     }
 }
 
 fn col_for_char(character: char) -> i8 {
     match character {
-        '7' | '4' | '1' => 1,
-        '8' | '5' | '2' | '0' => 2,
-        '9' | '6' | '3' | 'A' => 3,
+        '7' | '4' | '1' => 0,
+        '8' | '5' | '2' | '0' => 1,
+        '9' | '6' | '3' | 'A' => 2,
         _ => panic!("can’t find col for char {}", character),
     }
 }

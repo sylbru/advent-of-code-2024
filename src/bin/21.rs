@@ -32,9 +32,7 @@ fn numpad_to_dirpad(code: &str) -> String {
         } else {
             // general case
             // move horizontally then vertically
-            let count_horiz = dx.abs() as usize;
-            let horiz_move = if dx < 0 { "<" } else { ">" };
-            sequence.push_str(&horiz_move.repeat(count_horiz));
+            move_horiz(&mut sequence, dx);
 
             let count_vert = dy.abs() as usize;
             let vert_move = if dy < 0 { "^" } else { "v" };
@@ -50,6 +48,12 @@ fn numpad_to_dirpad(code: &str) -> String {
 
     sequence
     // <A^A>^^AvvvA
+}
+
+fn move_horiz(sequence: &mut String, dx: i8) -> () {
+    let count_horiz = dx.abs() as usize;
+    let horiz_move = if dx < 0 { "<" } else { ">" };
+    sequence.push_str(&horiz_move.repeat(count_horiz));
 }
 
 fn dirpad_to_dirpad(sequence: String) -> String {

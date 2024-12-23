@@ -2,7 +2,7 @@
 
 advent_of_code::solution!(22);
 
-pub fn part_one(input: &str) -> Option<u32> {
+pub fn part_one(input: &str) -> Option<usize> {
     let initial_secret_numbers: Vec<usize> = input
         .lines()
         .filter_map(|line| line.parse::<usize>().ok())
@@ -12,7 +12,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         .map(|&num| calculate_nth_secret_number(num, 2000))
         .sum();
 
-    Some(result as u32)
+    Some(result)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {

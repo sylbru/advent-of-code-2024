@@ -56,33 +56,61 @@ fn move_vert(sequence: &mut String, dy: i8) -> () {
     sequence.push_str(&vert_move.repeat(count_vert));
 }
 
-fn dirpad_to_dirpad(sequence: String) -> String {
+fn dirpad_to_dirpad(moves: String) -> String {
     let mut current = 'A';
     let mut y = row_for_char_dirpad(&current);
     let mut x = col_for_char_dirpad(&current);
-    println!("{} {}", y, x);
     let mut sequence = "".to_owned();
-    "aiue".to_owned()
+
+    for target in moves.chars() {
+        // move to char
+        let dy: i8 = row_for_char_dirpad(&target) - y;
+        let dx: i8 = col_for_char_dirpad(&target) - x;
+
+        if dx < 0 && dy < 0 {
+            // going SW, avoid hole
+            // move vertically then horizontally
+            move_vert(&mut sequence, dy);
+            move_horiz(&mut sequence, dx);
+        } else {
+            // general case
+            // move horizontally then vertically
+            move_horiz(&mut sequence, dx);
+            move_vert(&mut sequence, dy);
+        }
+
+        x = x + dx;
+        y = y + dy;
+        current = dirpad()[y as usize][x as usize];
+
+        sequence.push('A');
+    }
+
+    sequence
 }
 
 fn dirpad() -> Vec<Vec<char>> {
     vec![vec!['⌧', '^', 'A'], vec!['<', 'v', '>']]
 }
 
-fn row_for_char_dirpad(current: &char) -> usize {
+fn row_for_char_dirpad(current: &char) -> i8 {
     dirpad()
         .iter()
         .position(|row| row.contains(current))
         .unwrap()
+        .try_into()
+        .unwrap()
 }
 
-fn col_for_char_dirpad(current: &char) -> usize {
+fn col_for_char_dirpad(current: &char) -> i8 {
     dirpad()
         .iter()
         .find(|row| row.contains(current))
         .unwrap()
         .iter()
         .position(|character| character == current)
+        .unwrap()
+        .try_into()
         .unwrap()
 }
 
@@ -169,7 +197,7 @@ mod tests {
     fn test_dirpad_to_dirpad() {
         assert_eq!(
             dirpad_to_dirpad("<A^A>^^AvvvA".to_owned()),
-            "v<<A>>^A<A>AvA<^AA>A<vAAA>^A"
+            "<<vA>>^A<A>AvA^<AA>A<vAAA>^A" // "v<<A>>^A<A>AvA<^AA>A<vAAA>^A"
         );
     }
 

@@ -24,19 +24,13 @@ fn numpad_to_dirpad(code: &str) -> String {
         if dx < 0 && dy < 0 {
             // going NW, avoid hole
             // move vertically then horizontally
-            let count_vert = (-dy) as usize;
-            sequence.push_str(&"^".repeat(count_vert));
-
-            let count_horiz = (-dx) as usize;
-            sequence.push_str(&"<".repeat(count_horiz));
+            move_vert(&mut sequence, dy);
+            move_horiz(&mut sequence, dx);
         } else {
             // general case
             // move horizontally then vertically
             move_horiz(&mut sequence, dx);
-
-            let count_vert = dy.abs() as usize;
-            let vert_move = if dy < 0 { "^" } else { "v" };
-            sequence.push_str(&vert_move.repeat(count_vert));
+            move_vert(&mut sequence, dy);
         }
 
         x = x + dx;
@@ -54,6 +48,12 @@ fn move_horiz(sequence: &mut String, dx: i8) -> () {
     let count_horiz = dx.abs() as usize;
     let horiz_move = if dx < 0 { "<" } else { ">" };
     sequence.push_str(&horiz_move.repeat(count_horiz));
+}
+
+fn move_vert(sequence: &mut String, dy: i8) -> () {
+    let count_vert = dy.abs() as usize;
+    let vert_move = if dy < 0 { "^" } else { "v" };
+    sequence.push_str(&vert_move.repeat(count_vert));
 }
 
 fn dirpad_to_dirpad(sequence: String) -> String {

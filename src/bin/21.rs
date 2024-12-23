@@ -157,7 +157,7 @@ mod tests {
 
     #[test]
     fn test_numpad_02A() {
-        assert_eq!(numpad_to_dirpad("02A"), "<A^Av>A");
+        assert_eq!(numpad_to_dirpad("02A"), "<A^A>vA");
     }
 
     #[test]

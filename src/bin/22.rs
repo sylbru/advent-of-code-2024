@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 advent_of_code::solution!(22);
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -6,6 +8,14 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 pub fn part_two(input: &str) -> Option<u32> {
     None
+}
+
+fn next(secret_number: usize) -> usize {
+    let step_1 = prune(mix(secret_number, secret_number * 64));
+    let step_2 = prune(mix(step_1, step_1 / 32));
+    let step_3 = prune(mix(step_2, step_2 * 2048));
+    println!("{} {} {} {} ", secret_number, step_1, step_2, step_3,);
+    step_3
 }
 
 fn mix(secret_number: usize, value: usize) -> usize {
@@ -28,6 +38,12 @@ mod tests {
     #[test]
     fn test_prune() {
         assert_eq!(prune(100000000), 16113920);
+    }
+
+    #[test]
+    fn test_next() {
+        assert_eq!(next(123), 15887950);
+        assert_eq!(next(16495136), 527345);
     }
 
     #[test]

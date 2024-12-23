@@ -3,7 +3,16 @@
 advent_of_code::solution!(22);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    None
+    let initial_secret_numbers: Vec<usize> = input
+        .lines()
+        .filter_map(|line| line.parse::<usize>().ok())
+        .collect();
+    let result: usize = initial_secret_numbers
+        .iter()
+        .map(|&num| calculate_2000th_secret_number(num))
+        .sum();
+
+    Some(result as u32)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -64,7 +73,7 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(37327623));
     }
 
     #[test]

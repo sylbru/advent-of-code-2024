@@ -9,7 +9,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         .collect();
     let result: usize = initial_secret_numbers
         .iter()
-        .map(|&num| calculate_2000th_secret_number(num))
+        .map(|&num| calculate_nth_secret_number(num, 2000))
         .sum();
 
     Some(result as u32)
@@ -19,10 +19,10 @@ pub fn part_two(input: &str) -> Option<u32> {
     None
 }
 
-fn calculate_2000th_secret_number(initial: usize) -> usize {
+fn calculate_nth_secret_number(initial: usize, n: usize) -> usize {
     let mut next = initial;
 
-    for i in 0..2000 {
+    for i in 0..n {
         next = next_secret_number(next);
     }
 
@@ -65,9 +65,14 @@ mod tests {
     }
 
     #[test]
+    fn test_10th_secret_number() {
+        assert_eq!(calculate_nth_secret_number(123, 10), 5908254);
+    }
+
+    #[test]
     fn test_2000th_secret_number() {
-        assert_eq!(calculate_2000th_secret_number(1), 8685429);
-        assert_eq!(calculate_2000th_secret_number(2024), 8667524);
+        assert_eq!(calculate_nth_secret_number(1, 2000), 8685429);
+        assert_eq!(calculate_nth_secret_number(2024, 2000), 8667524);
     }
 
     #[test]

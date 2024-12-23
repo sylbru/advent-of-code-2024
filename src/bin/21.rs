@@ -14,6 +14,21 @@ fn complexity(code: &str) -> u32 {
     let numeric_part: u32 = code[..code.len() - 1].parse().ok().unwrap();
     let sequence = dirpad_to_dirpad(dirpad_to_dirpad(numpad_to_dirpad(code)));
 
+    // // if code == "039A" {
+    // println!("{}", numpad_to_dirpad(code));
+    // println!("{}", dirpad_to_dirpad(numpad_to_dirpad(code)));
+    // println!(
+    //     "{}",
+    //     dirpad_to_dirpad(dirpad_to_dirpad(numpad_to_dirpad(code)))
+    // );
+    // // }
+    println!(
+        "{}: {} * {} (len of {})",
+        code,
+        numeric_part,
+        sequence.len(),
+        sequence
+    );
     numeric_part * sequence.len() as u32
 }
 
@@ -133,7 +148,7 @@ fn numpad() -> Vec<Vec<char>> {
 fn row_for_char(character: char) -> i8 {
     match character {
         '7' | '8' | '9' => 0,
-        '3' | '5' | '6' => 1,
+        '4' | '5' | '6' => 1,
         '1' | '2' | '3' => 2,
         '0' | 'A' => 3,
         _ => panic!("can’t find row for char {}", character),
@@ -208,7 +223,6 @@ mod tests {
         );
     }
 
-    #[ignore]
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));

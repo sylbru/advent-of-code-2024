@@ -33,18 +33,12 @@ fn numpad_to_dirpad(code: &str) -> String {
             // general case
             // move horizontally then vertically
             let count_horiz = dx.abs() as usize;
-            if (dx < 0) {
-                sequence.push_str(&"<".repeat(count_horiz));
-            } else {
-                sequence.push_str(&">".repeat(count_horiz));
-            }
+            let horiz_move = if dx < 0 { "<" } else { ">" };
+            sequence.push_str(&horiz_move.repeat(count_horiz));
 
             let count_vert = dy.abs() as usize;
-            if (dy < 0) {
-                sequence.push_str(&"^".repeat(count_vert));
-            } else {
-                sequence.push_str(&"v".repeat(count_vert));
-            }
+            let vert_move = if dy < 0 { "^" } else { "v" };
+            sequence.push_str(&vert_move.repeat(count_vert));
         }
 
         x = x + dx;

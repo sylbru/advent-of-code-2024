@@ -5,9 +5,16 @@ advent_of_code::solution!(21);
 pub fn part_one(input: &str) -> Option<u32> {
     let codes: Vec<&str> = input.lines().collect();
 
-    let complexities: Vec<u32> = vec![68 * 29, 60 * 980, 68 * 179, 64 * 456, 64 * 379];
+    let complexities = codes.iter().map(|code| complexity(code));
 
-    Some(complexities.iter().sum())
+    Some(complexities.sum())
+}
+
+fn complexity(code: &str) -> u32 {
+    let numeric_part: u32 = code[..code.len() - 1].parse().ok().unwrap();
+    let sequence = dirpad_to_dirpad(dirpad_to_dirpad(numpad_to_dirpad(code)));
+
+    numeric_part * sequence.len() as u32
 }
 
 fn numpad_to_dirpad(code: &str) -> String {

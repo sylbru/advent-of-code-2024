@@ -79,10 +79,26 @@ fn run_one((inputs, gates_): (Vec<(&str, bool)>, Vec<Gate>)) -> u32 {
 
         println!("{:?}", values);
         // just one step for now
-        panic!();
+        break;
     }
 
-    3214
+    let mut i = 0;
+    let mut result = 0u32;
+    loop {
+        let key = format!("z{:02}", i);
+        match values.get(&key) {
+            Some(value) if *value == true => {
+                result += 2u32.pow(i);
+            }
+            Some(_) => {}
+            None => {
+                break;
+            }
+        }
+        i += 1;
+    }
+
+    result
 }
 
 fn compute_gate(gate: &Gate, values: &mut HashMap<String, bool>) -> () {
@@ -104,7 +120,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_part_one() {
+    fn test_24_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
         assert_eq!(result, Some(4));
     }

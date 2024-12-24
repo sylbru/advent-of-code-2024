@@ -1,6 +1,14 @@
+#![allow(unused)]
+
 advent_of_code::solution!(24);
 
-type Gate = (String, Operator, String, String);
+#[derive(Debug)]
+struct Gate {
+    a: String,
+    operator: Operator,
+    b: String,
+    to_wire: String,
+}
 
 #[derive(Debug)]
 enum Operator {
@@ -30,9 +38,12 @@ fn parse_gates(gates: &str) -> Vec<Gate> {
     gates
         .lines()
         .map(|gate| match gate.split(" ").collect::<Vec<&str>>()[..] {
-            [a, operator, b, "->", result] => {
-                (a.into(), parse_operator(operator), b.into(), result.into())
-            }
+            [a, operator, b, "->", to_wire] => Gate {
+                a: a.into(),
+                operator: parse_operator(operator),
+                b: b.into(),
+                to_wire: to_wire.into(),
+            },
             _ => panic!("can’t match"),
         })
         .collect()

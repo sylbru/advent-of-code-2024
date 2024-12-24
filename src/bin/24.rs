@@ -1,8 +1,10 @@
 #![allow(unused)]
 
+use std::collections::HashMap;
+
 advent_of_code::solution!(24);
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Gate {
     a: String,
     operator: Operator,
@@ -10,7 +12,7 @@ struct Gate {
     to_wire: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum Operator {
     And,
     Or,
@@ -62,9 +64,37 @@ pub fn part_one(input: &str) -> Option<u32> {
     parse(input).map(run_one)
 }
 
-fn run_one((inputs, gates): (Vec<(&str, bool)>, Vec<Gate>)) -> u32 {
-    222
+fn run_one((inputs, gates_): (Vec<(&str, bool)>, Vec<Gate>)) -> u32 {
+    let mut values: HashMap<String, bool> = HashMap::new();
+    let mut gates = gates_.clone();
+
+    for input in inputs {
+        values.insert(input.0.to_owned(), input.1);
+    }
+
+    while !gates.is_empty() {
+        for gate in &gates {
+            compute_gate(gate, &mut values);
+        }
+
+        println!("{:?}", values);
+        // just one step for now
+        panic!();
+    }
+
+    3214
 }
+
+fn compute_gate(gate: &Gate, values: &mut HashMap<String, bool>) -> () {
+    let result = match gate.operator {
+        Operator::And => *values.get(&gate.a).unwrap() && *values.get(&gate.b).unwrap(),
+        Operator::Or => *values.get(&gate.a).unwrap() || *values.get(&gate.b).unwrap(),
+        Operator::Xor => *values.get(&gate.a).unwrap() != *values.get(&gate.b).unwrap(),
+    };
+
+    values.insert(gate.to_wire.clone(), result);
+}
+
 pub fn part_two(input: &str) -> Option<u32> {
     None
 }

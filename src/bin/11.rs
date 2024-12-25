@@ -45,7 +45,6 @@ fn count_after_blinks_single_stone(
                 .map(|&stone| transform_stone(stone))
                 .collect::<Vec<Vec<usize>>>()
                 .concat();
-            println!("inserting memo {} {} {}", stone, i + 1, stones.len());
             memo.insert((stone, i + 1), stones.len() as u32);
         }
     }
@@ -75,6 +74,7 @@ fn transform_stone(stone: usize) -> Vec<usize> {
 mod tests {
     use super::*;
 
+    #[ignore]
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));

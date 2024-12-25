@@ -1,6 +1,39 @@
+#![allow(unused)]
+
 advent_of_code::solution!(25);
 
+#[derive(Debug)]
+enum Schema {
+    Key([u8; 5]),
+    Lock([u8; 5]),
+}
+
+fn parse(input: &str) -> Vec<Schema> {
+    input.split("\n\n").map(parse_schema).collect()
+}
+
+fn parse_schema(input: &str) -> Schema {
+    let mut heights: [u8; 5] = [0, 0, 0, 0, 0];
+
+    for line in input.lines() {
+        for (i, character) in line.chars().enumerate() {
+            if character == '#' {
+                heights[i] += 1;
+            }
+        }
+    }
+
+    let adjusted_heights = heights.map(|height| height - 1);
+
+    match input.chars().nth(0) {
+        Some('#') => Schema::Lock(adjusted_heights),
+        _ => Schema::Key(adjusted_heights),
+    }
+}
+
 pub fn part_one(input: &str) -> Option<u32> {
+    let parsed = parse(input);
+
     None
 }
 
@@ -15,7 +48,7 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(3));
     }
 
     #[test]

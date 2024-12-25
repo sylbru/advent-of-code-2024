@@ -8,8 +8,18 @@ enum Schema {
     Lock([u8; 5]),
 }
 
-fn parse(input: &str) -> Vec<Schema> {
-    input.split("\n\n").map(parse_schema).collect()
+fn parse(input: &str) -> (Vec<[u8; 5]>, Vec<[u8; 5]>) {
+    let mut locks: Vec<[u8; 5]> = Vec::new();
+    let mut keys: Vec<[u8; 5]> = Vec::new();
+
+    for schema in input.split("\n\n") {
+        match parse_schema(schema) {
+            Schema::Lock(heights) => locks.push(heights),
+            Schema::Key(heights) => keys.push(heights),
+        }
+    }
+
+    (locks, keys)
 }
 
 fn parse_schema(input: &str) -> Schema {
@@ -32,19 +42,23 @@ fn parse_schema(input: &str) -> Schema {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let parsed = parse(input);
+    let (locks, keys) = parse(input);
+    let mut combinations = 0;
 
-    None
+    for lock in locks {
+        combinations += keys
+            .iter()
+            .filter(|&key| key_and_lock_fit(key, &lock))
+            .count()
+    }
+
+    Some(combinations as u32)
 }
 
-fn key_and_lock_fit(key: Schema, lock: Schema) -> bool {
-    match (key, lock) {
-        (Schema::Key(heights_key), Schema::Lock(heights_lock)) => heights_key
-            .iter()
-            .zip(heights_lock.iter())
-            .all(|(height_key, height_lock)| height_key + height_lock <= 5),
-        _ => false,
-    }
+fn key_and_lock_fit(key: &[u8; 5], lock: &[u8; 5]) -> bool {
+    key.iter()
+        .zip(lock.iter())
+        .all(|(height_key, height_lock)| height_key + height_lock <= 5)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {

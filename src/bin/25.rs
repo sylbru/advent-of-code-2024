@@ -37,6 +37,16 @@ pub fn part_one(input: &str) -> Option<u32> {
     None
 }
 
+fn key_and_lock_fit(key: Schema, lock: Schema) -> bool {
+    match (key, lock) {
+        (Schema::Key(heights_key), Schema::Lock(heights_lock)) => heights_key
+            .iter()
+            .zip(heights_lock.iter())
+            .all(|(height_key, height_lock)| height_key + height_lock <= 5),
+        _ => false,
+    }
+}
+
 pub fn part_two(input: &str) -> Option<u32> {
     None
 }
